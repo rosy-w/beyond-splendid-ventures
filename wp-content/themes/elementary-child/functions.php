@@ -1,8 +1,8 @@
 <?php
 /**
- * Beyond Splendid Ventures Child Theme functions and definitions
+ * Beyond Splendid Ventures - Hello Elementor Child Theme functions and definitions
  *
- * @package Elementary Child
+ * @package Hello Elementor Child
  */
 
 // Exit if accessed directly
@@ -13,21 +13,21 @@ if (!defined('ABSPATH')) {
 /**
  * Enqueue parent and child theme styles and scripts
  */
-function elementary_child_enqueue_styles_scripts() {
+function hello_elementor_child_enqueue_styles_scripts() {
     // Enqueue parent theme style
-    wp_enqueue_style('elementary-style', get_template_directory_uri() . '/style.css');
+    wp_enqueue_style('hello-elementor', get_template_directory_uri() . '/style.css');
     
     // Enqueue child theme style
-    wp_enqueue_style('elementary-child-style', 
+    wp_enqueue_style('hello-elementor-child-style', 
         get_stylesheet_directory_uri() . '/style.css', 
-        array('elementary-style'), 
+        array('hello-elementor'), 
         wp_get_theme()->get('Version')
     );
     
     // Enqueue custom styles
-    wp_enqueue_style('elementary-child-custom-style', 
+    wp_enqueue_style('hello-elementor-child-custom-style', 
         get_stylesheet_directory_uri() . '/custom-styles.css', 
-        array('elementary-child-style'), 
+        array('hello-elementor-child-style'), 
         wp_get_theme()->get('Version')
     );
     
@@ -46,14 +46,14 @@ function elementary_child_enqueue_styles_scripts() {
     );
     
     // Enqueue custom scripts
-    wp_enqueue_script('elementary-child-scripts', 
+    wp_enqueue_script('hello-elementor-child-scripts', 
         get_stylesheet_directory_uri() . '/custom-scripts.js', 
         array('jquery'), 
         wp_get_theme()->get('Version'), 
         true
     );
 }
-add_action('wp_enqueue_scripts', 'elementary_child_enqueue_styles_scripts');
+add_action('wp_enqueue_scripts', 'hello_elementor_child_enqueue_styles_scripts');
 
 /**
  * Include custom post types
@@ -73,23 +73,23 @@ require_once get_stylesheet_directory() . '/inc/customizer.php';
 /**
  * Register custom navigation menus
  */
-function elementary_child_register_menus() {
+function hello_elementor_child_register_menus() {
     register_nav_menus(array(
-        'primary_menu' => __('Primary Menu', 'elementary-child'),
-        'footer_menu' => __('Footer Menu', 'elementary-child'),
-        'destinations_menu' => __('Destinations Menu', 'elementary-child'),
+        'primary_menu' => __('Primary Menu', 'hello-elementor-child'),
+        'footer_menu' => __('Footer Menu', 'hello-elementor-child'),
+        'destinations_menu' => __('Destinations Menu', 'hello-elementor-child'),
     ));
 }
-add_action('init', 'elementary_child_register_menus');
+add_action('init', 'hello_elementor_child_register_menus');
 
 /**
  * Register widget areas
  */
-function elementary_child_widgets_init() {
+function hello_elementor_child_widgets_init() {
     register_sidebar(array(
-        'name'          => __('Home Page Sidebar', 'elementary-child'),
+        'name'          => __('Home Page Sidebar', 'hello-elementor-child'),
         'id'            => 'home-sidebar',
-        'description'   => __('Add widgets for the home page sidebar here', 'elementary-child'),
+        'description'   => __('Add widgets for the home page sidebar here', 'hello-elementor-child'),
         'before_widget' => '<section id="%1$s" class="widget %2$s">',
         'after_widget'  => '</section>',
         'before_title'  => '<h2 class="widget-title">',
@@ -97,9 +97,9 @@ function elementary_child_widgets_init() {
     ));
     
     register_sidebar(array(
-        'name'          => __('Tour Page Sidebar', 'elementary-child'),
+        'name'          => __('Tour Page Sidebar', 'hello-elementor-child'),
         'id'            => 'tour-sidebar',
-        'description'   => __('Add widgets for the tour page sidebar here', 'elementary-child'),
+        'description'   => __('Add widgets for the tour page sidebar here', 'hello-elementor-child'),
         'before_widget' => '<section id="%1$s" class="widget %2$s">',
         'after_widget'  => '</section>',
         'before_title'  => '<h2 class="widget-title">',
@@ -107,9 +107,9 @@ function elementary_child_widgets_init() {
     ));
     
     register_sidebar(array(
-        'name'          => __('Footer Widget Area 1', 'elementary-child'),
+        'name'          => __('Footer Widget Area 1', 'hello-elementor-child'),
         'id'            => 'footer-1',
-        'description'   => __('Add widgets for the footer area 1 here', 'elementary-child'),
+        'description'   => __('Add widgets for the footer area 1 here', 'hello-elementor-child'),
         'before_widget' => '<section id="%1$s" class="widget %2$s">',
         'after_widget'  => '</section>',
         'before_title'  => '<h3 class="widget-title">',
@@ -117,9 +117,9 @@ function elementary_child_widgets_init() {
     ));
     
     register_sidebar(array(
-        'name'          => __('Footer Widget Area 2', 'elementary-child'),
+        'name'          => __('Footer Widget Area 2', 'hello-elementor-child'),
         'id'            => 'footer-2',
-        'description'   => __('Add widgets for the footer area 2 here', 'elementary-child'),
+        'description'   => __('Add widgets for the footer area 2 here', 'hello-elementor-child'),
         'before_widget' => '<section id="%1$s" class="widget %2$s">',
         'after_widget'  => '</section>',
         'before_title'  => '<h3 class="widget-title">',
@@ -127,21 +127,21 @@ function elementary_child_widgets_init() {
     ));
     
     register_sidebar(array(
-        'name'          => __('Footer Widget Area 3', 'elementary-child'),
+        'name'          => __('Footer Widget Area 3', 'hello-elementor-child'),
         'id'            => 'footer-3',
-        'description'   => __('Add widgets for the footer area 3 here', 'elementary-child'),
+        'description'   => __('Add widgets for the footer area 3 here', 'hello-elementor-child'),
         'before_widget' => '<section id="%1$s" class="widget %2$s">',
         'after_widget'  => '</section>',
         'before_title'  => '<h3 class="widget-title">',
         'after_title'   => '</h3>',
     ));
 }
-add_action('widgets_init', 'elementary_child_widgets_init');
+add_action('widgets_init', 'hello_elementor_child_widgets_init');
 
 /**
  * Add theme support
  */
-function elementary_child_theme_setup() {
+function hello_elementor_child_theme_setup() {
     // Add support for custom logo
     add_theme_support('custom-logo', array(
         'height'      => 100,
@@ -181,12 +181,12 @@ function elementary_child_theme_setup() {
     add_theme_support('elementor-pro');
     add_theme_support('elementor-header-footer');
 }
-add_action('after_setup_theme', 'elementary_child_theme_setup');
+add_action('after_setup_theme', 'hello_elementor_child_theme_setup');
 
 /**
  * Add custom body classes
  */
-function elementary_child_body_classes($classes) {
+function hello_elementor_child_body_classes($classes) {
     // Add class if we're viewing the front page
     if (is_front_page()) {
         $classes[] = 'home-page';
@@ -204,23 +204,23 @@ function elementary_child_body_classes($classes) {
     
     return $classes;
 }
-add_filter('body_class', 'elementary_child_body_classes');
+add_filter('body_class', 'hello_elementor_child_body_classes');
 
 /**
  * Modify the excerpt length
  */
-function elementary_child_excerpt_length($length) {
+function hello_elementor_child_excerpt_length($length) {
     return 25;
 }
-add_filter('excerpt_length', 'elementary_child_excerpt_length');
+add_filter('excerpt_length', 'hello_elementor_child_excerpt_length');
 
 /**
  * Modify the excerpt more text
  */
-function elementary_child_excerpt_more($more) {
-    return '... <a class="read-more" href="' . get_permalink() . '">' . __('Read More', 'elementary-child') . ' <i class="fas fa-arrow-right"></i></a>';
+function hello_elementor_child_excerpt_more($more) {
+    return '... <a class="read-more" href="' . get_permalink() . '">' . __('Read More', 'hello-elementor-child') . ' <i class="fas fa-arrow-right"></i></a>';
 }
-add_filter('excerpt_more', 'elementary_child_excerpt_more');
+add_filter('excerpt_more', 'hello_elementor_child_excerpt_more');
 
 /**
  * Register custom admin columns for Tours
