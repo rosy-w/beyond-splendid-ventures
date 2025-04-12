@@ -2,7 +2,7 @@
 /**
  * Custom Widgets for Beyond Splendid Ventures Theme
  *
- * @package Elementary Child
+ * @package Hello Elementor Child
  */
 
 // Exit if accessed directly
@@ -21,8 +21,8 @@ class BSV_Featured_Tours_Widget extends WP_Widget {
     public function __construct() {
         parent::__construct(
             'bsv_featured_tours',
-            __('BSV: Featured Tours', 'elementary-child'),
-            array('description' => __('Displays a list of featured tours', 'elementary-child'))
+            __('BSV: Featured Tours', 'hello-elementor-child'),
+            array('description' => __('Displays a list of featured tours', 'hello-elementor-child'))
         );
     }
     
@@ -82,7 +82,7 @@ class BSV_Featured_Tours_Widget extends WP_Widget {
                                 if ($tour_duration) : 
                                 ?>
                                     <span class="widget-tour-duration">
-                                        <i class="far fa-clock"></i> <?php echo esc_html($tour_duration); ?> <?php _e('Days', 'elementary-child'); ?>
+                                        <i class="far fa-clock"></i> <?php echo esc_html($tour_duration); ?> <?php _e('Days', 'hello-elementor-child'); ?>
                                     </span>
                                 <?php endif; ?>
                             </div>
@@ -93,7 +93,7 @@ class BSV_Featured_Tours_Widget extends WP_Widget {
                 <?php if (!empty($instance['view_all_url'])) : ?>
                     <div class="widget-view-all">
                         <a href="<?php echo esc_url($instance['view_all_url']); ?>" class="btn btn-outline-primary btn-sm">
-                            <?php echo !empty($instance['view_all_text']) ? esc_html($instance['view_all_text']) : __('View All Tours', 'elementary-child'); ?>
+                            <?php echo !empty($instance['view_all_text']) ? esc_html($instance['view_all_text']) : __('View All Tours', 'hello-elementor-child'); ?>
                         </a>
                     </div>
                 <?php endif; ?>
@@ -101,7 +101,7 @@ class BSV_Featured_Tours_Widget extends WP_Widget {
             
             <?php wp_reset_postdata();
         else : ?>
-            <p><?php _e('No featured tours found.', 'elementary-child'); ?></p>
+            <p><?php _e('No featured tours found.', 'hello-elementor-child'); ?></p>
         <?php endif;
         
         echo $args['after_widget'];
@@ -113,25 +113,25 @@ class BSV_Featured_Tours_Widget extends WP_Widget {
      * @param array $instance Previously saved values from database.
      */
     public function form($instance) {
-        $title = !empty($instance['title']) ? $instance['title'] : __('Featured Tours', 'elementary-child');
+        $title = !empty($instance['title']) ? $instance['title'] : __('Featured Tours', 'hello-elementor-child');
         $number = !empty($instance['number']) ? absint($instance['number']) : 3;
-        $view_all_text = !empty($instance['view_all_text']) ? $instance['view_all_text'] : __('View All Tours', 'elementary-child');
+        $view_all_text = !empty($instance['view_all_text']) ? $instance['view_all_text'] : __('View All Tours', 'hello-elementor-child');
         $view_all_url = !empty($instance['view_all_url']) ? $instance['view_all_url'] : '';
         ?>
         <p>
-            <label for="<?php echo esc_attr($this->get_field_id('title')); ?>"><?php esc_html_e('Title:', 'elementary-child'); ?></label>
+            <label for="<?php echo esc_attr($this->get_field_id('title')); ?>"><?php esc_html_e('Title:', 'hello-elementor-child'); ?></label>
             <input class="widefat" id="<?php echo esc_attr($this->get_field_id('title')); ?>" name="<?php echo esc_attr($this->get_field_name('title')); ?>" type="text" value="<?php echo esc_attr($title); ?>">
         </p>
         <p>
-            <label for="<?php echo esc_attr($this->get_field_id('number')); ?>"><?php esc_html_e('Number of tours to show:', 'elementary-child'); ?></label>
+            <label for="<?php echo esc_attr($this->get_field_id('number')); ?>"><?php esc_html_e('Number of tours to show:', 'hello-elementor-child'); ?></label>
             <input class="tiny-text" id="<?php echo esc_attr($this->get_field_id('number')); ?>" name="<?php echo esc_attr($this->get_field_name('number')); ?>" type="number" step="1" min="1" value="<?php echo esc_attr($number); ?>" size="3">
         </p>
         <p>
-            <label for="<?php echo esc_attr($this->get_field_id('view_all_text')); ?>"><?php esc_html_e('View All Text:', 'elementary-child'); ?></label>
+            <label for="<?php echo esc_attr($this->get_field_id('view_all_text')); ?>"><?php esc_html_e('View All Text:', 'hello-elementor-child'); ?></label>
             <input class="widefat" id="<?php echo esc_attr($this->get_field_id('view_all_text')); ?>" name="<?php echo esc_attr($this->get_field_name('view_all_text')); ?>" type="text" value="<?php echo esc_attr($view_all_text); ?>">
         </p>
         <p>
-            <label for="<?php echo esc_attr($this->get_field_id('view_all_url')); ?>"><?php esc_html_e('View All URL:', 'elementary-child'); ?></label>
+            <label for="<?php echo esc_attr($this->get_field_id('view_all_url')); ?>"><?php esc_html_e('View All URL:', 'hello-elementor-child'); ?></label>
             <input class="widefat" id="<?php echo esc_attr($this->get_field_id('view_all_url')); ?>" name="<?php echo esc_attr($this->get_field_name('view_all_url')); ?>" type="url" value="<?php echo esc_url($view_all_url); ?>">
         </p>
         <?php
@@ -167,8 +167,8 @@ class BSV_Featured_Destinations_Widget extends WP_Widget {
     public function __construct() {
         parent::__construct(
             'bsv_featured_destinations',
-            __('BSV: Featured Destinations', 'elementary-child'),
-            array('description' => __('Displays a list of featured destinations', 'elementary-child'))
+            __('BSV: Featured Destinations', 'hello-elementor-child'),
+            array('description' => __('Displays a list of featured destinations', 'hello-elementor-child'))
         );
     }
     
@@ -231,7 +231,7 @@ class BSV_Featured_Destinations_Widget extends WP_Widget {
                 <?php if (!empty($instance['view_all_url'])) : ?>
                     <div class="widget-view-all">
                         <a href="<?php echo esc_url($instance['view_all_url']); ?>" class="btn btn-outline-primary btn-sm">
-                            <?php echo !empty($instance['view_all_text']) ? esc_html($instance['view_all_text']) : __('View All Destinations', 'elementary-child'); ?>
+                            <?php echo !empty($instance['view_all_text']) ? esc_html($instance['view_all_text']) : __('View All Destinations', 'hello-elementor-child'); ?>
                         </a>
                     </div>
                 <?php endif; ?>
@@ -239,7 +239,7 @@ class BSV_Featured_Destinations_Widget extends WP_Widget {
             
             <?php wp_reset_postdata();
         else : ?>
-            <p><?php _e('No featured destinations found.', 'elementary-child'); ?></p>
+            <p><?php _e('No featured destinations found.', 'hello-elementor-child'); ?></p>
         <?php endif;
         
         echo $args['after_widget'];
@@ -251,25 +251,25 @@ class BSV_Featured_Destinations_Widget extends WP_Widget {
      * @param array $instance Previously saved values from database.
      */
     public function form($instance) {
-        $title = !empty($instance['title']) ? $instance['title'] : __('Featured Destinations', 'elementary-child');
+        $title = !empty($instance['title']) ? $instance['title'] : __('Featured Destinations', 'hello-elementor-child');
         $number = !empty($instance['number']) ? absint($instance['number']) : 3;
-        $view_all_text = !empty($instance['view_all_text']) ? $instance['view_all_text'] : __('View All Destinations', 'elementary-child');
+        $view_all_text = !empty($instance['view_all_text']) ? $instance['view_all_text'] : __('View All Destinations', 'hello-elementor-child');
         $view_all_url = !empty($instance['view_all_url']) ? $instance['view_all_url'] : '';
         ?>
         <p>
-            <label for="<?php echo esc_attr($this->get_field_id('title')); ?>"><?php esc_html_e('Title:', 'elementary-child'); ?></label>
+            <label for="<?php echo esc_attr($this->get_field_id('title')); ?>"><?php esc_html_e('Title:', 'hello-elementor-child'); ?></label>
             <input class="widefat" id="<?php echo esc_attr($this->get_field_id('title')); ?>" name="<?php echo esc_attr($this->get_field_name('title')); ?>" type="text" value="<?php echo esc_attr($title); ?>">
         </p>
         <p>
-            <label for="<?php echo esc_attr($this->get_field_id('number')); ?>"><?php esc_html_e('Number of destinations to show:', 'elementary-child'); ?></label>
+            <label for="<?php echo esc_attr($this->get_field_id('number')); ?>"><?php esc_html_e('Number of destinations to show:', 'hello-elementor-child'); ?></label>
             <input class="tiny-text" id="<?php echo esc_attr($this->get_field_id('number')); ?>" name="<?php echo esc_attr($this->get_field_name('number')); ?>" type="number" step="1" min="1" value="<?php echo esc_attr($number); ?>" size="3">
         </p>
         <p>
-            <label for="<?php echo esc_attr($this->get_field_id('view_all_text')); ?>"><?php esc_html_e('View All Text:', 'elementary-child'); ?></label>
+            <label for="<?php echo esc_attr($this->get_field_id('view_all_text')); ?>"><?php esc_html_e('View All Text:', 'hello-elementor-child'); ?></label>
             <input class="widefat" id="<?php echo esc_attr($this->get_field_id('view_all_text')); ?>" name="<?php echo esc_attr($this->get_field_name('view_all_text')); ?>" type="text" value="<?php echo esc_attr($view_all_text); ?>">
         </p>
         <p>
-            <label for="<?php echo esc_attr($this->get_field_id('view_all_url')); ?>"><?php esc_html_e('View All URL:', 'elementary-child'); ?></label>
+            <label for="<?php echo esc_attr($this->get_field_id('view_all_url')); ?>"><?php esc_html_e('View All URL:', 'hello-elementor-child'); ?></label>
             <input class="widefat" id="<?php echo esc_attr($this->get_field_id('view_all_url')); ?>" name="<?php echo esc_attr($this->get_field_name('view_all_url')); ?>" type="url" value="<?php echo esc_url($view_all_url); ?>">
         </p>
         <?php
@@ -305,8 +305,8 @@ class BSV_Recent_Testimonials_Widget extends WP_Widget {
     public function __construct() {
         parent::__construct(
             'bsv_recent_testimonials',
-            __('BSV: Recent Testimonials', 'elementary-child'),
-            array('description' => __('Displays recent testimonials with a slider', 'elementary-child'))
+            __('BSV: Recent Testimonials', 'hello-elementor-child'),
+            array('description' => __('Displays recent testimonials with a slider', 'hello-elementor-child'))
         );
     }
     
@@ -426,13 +426,13 @@ class BSV_Recent_Testimonials_Widget extends WP_Widget {
             if (!empty($instance['view_all_url'])) : ?>
                 <div class="widget-view-all">
                     <a href="<?php echo esc_url($instance['view_all_url']); ?>" class="btn btn-outline-primary btn-sm">
-                        <?php echo !empty($instance['view_all_text']) ? esc_html($instance['view_all_text']) : __('View All Testimonials', 'elementary-child'); ?>
+                        <?php echo !empty($instance['view_all_text']) ? esc_html($instance['view_all_text']) : __('View All Testimonials', 'hello-elementor-child'); ?>
                     </a>
                 </div>
             <?php endif;
             
         else : ?>
-            <p><?php _e('No testimonials found.', 'elementary-child'); ?></p>
+            <p><?php _e('No testimonials found.', 'hello-elementor-child'); ?></p>
         <?php endif;
         
         echo $args['after_widget'];
@@ -444,25 +444,25 @@ class BSV_Recent_Testimonials_Widget extends WP_Widget {
      * @param array $instance Previously saved values from database.
      */
     public function form($instance) {
-        $title = !empty($instance['title']) ? $instance['title'] : __('What Our Clients Say', 'elementary-child');
+        $title = !empty($instance['title']) ? $instance['title'] : __('What Our Clients Say', 'hello-elementor-child');
         $number = !empty($instance['number']) ? absint($instance['number']) : 3;
-        $view_all_text = !empty($instance['view_all_text']) ? $instance['view_all_text'] : __('View All Testimonials', 'elementary-child');
+        $view_all_text = !empty($instance['view_all_text']) ? $instance['view_all_text'] : __('View All Testimonials', 'hello-elementor-child');
         $view_all_url = !empty($instance['view_all_url']) ? $instance['view_all_url'] : '';
         ?>
         <p>
-            <label for="<?php echo esc_attr($this->get_field_id('title')); ?>"><?php esc_html_e('Title:', 'elementary-child'); ?></label>
+            <label for="<?php echo esc_attr($this->get_field_id('title')); ?>"><?php esc_html_e('Title:', 'hello-elementor-child'); ?></label>
             <input class="widefat" id="<?php echo esc_attr($this->get_field_id('title')); ?>" name="<?php echo esc_attr($this->get_field_name('title')); ?>" type="text" value="<?php echo esc_attr($title); ?>">
         </p>
         <p>
-            <label for="<?php echo esc_attr($this->get_field_id('number')); ?>"><?php esc_html_e('Number of testimonials to show:', 'elementary-child'); ?></label>
+            <label for="<?php echo esc_attr($this->get_field_id('number')); ?>"><?php esc_html_e('Number of testimonials to show:', 'hello-elementor-child'); ?></label>
             <input class="tiny-text" id="<?php echo esc_attr($this->get_field_id('number')); ?>" name="<?php echo esc_attr($this->get_field_name('number')); ?>" type="number" step="1" min="1" value="<?php echo esc_attr($number); ?>" size="3">
         </p>
         <p>
-            <label for="<?php echo esc_attr($this->get_field_id('view_all_text')); ?>"><?php esc_html_e('View All Text:', 'elementary-child'); ?></label>
+            <label for="<?php echo esc_attr($this->get_field_id('view_all_text')); ?>"><?php esc_html_e('View All Text:', 'hello-elementor-child'); ?></label>
             <input class="widefat" id="<?php echo esc_attr($this->get_field_id('view_all_text')); ?>" name="<?php echo esc_attr($this->get_field_name('view_all_text')); ?>" type="text" value="<?php echo esc_attr($view_all_text); ?>">
         </p>
         <p>
-            <label for="<?php echo esc_attr($this->get_field_id('view_all_url')); ?>"><?php esc_html_e('View All URL:', 'elementary-child'); ?></label>
+            <label for="<?php echo esc_attr($this->get_field_id('view_all_url')); ?>"><?php esc_html_e('View All URL:', 'hello-elementor-child'); ?></label>
             <input class="widefat" id="<?php echo esc_attr($this->get_field_id('view_all_url')); ?>" name="<?php echo esc_attr($this->get_field_name('view_all_url')); ?>" type="url" value="<?php echo esc_url($view_all_url); ?>">
         </p>
         <?php
@@ -498,8 +498,8 @@ class BSV_Tour_Search_Widget extends WP_Widget {
     public function __construct() {
         parent::__construct(
             'bsv_tour_search',
-            __('BSV: Tour Search', 'elementary-child'),
-            array('description' => __('Displays a search form for tours', 'elementary-child'))
+            __('BSV: Tour Search', 'hello-elementor-child'),
+            array('description' => __('Displays a search form for tours', 'hello-elementor-child'))
         );
     }
     
@@ -526,7 +526,7 @@ class BSV_Tour_Search_Widget extends WP_Widget {
         $search_args = array(
             'type' => 'tour',
             'class' => 'widget-tour-search',
-            'placeholder' => !empty($instance['placeholder']) ? $instance['placeholder'] : __('Search tours...', 'elementary-child')
+            'placeholder' => !empty($instance['placeholder']) ? $instance['placeholder'] : __('Search tours...', 'hello-elementor-child')
         );
         
         set_query_var('args', $search_args);
@@ -541,15 +541,15 @@ class BSV_Tour_Search_Widget extends WP_Widget {
      * @param array $instance Previously saved values from database.
      */
     public function form($instance) {
-        $title = !empty($instance['title']) ? $instance['title'] : __('Find Your Tour', 'elementary-child');
-        $placeholder = !empty($instance['placeholder']) ? $instance['placeholder'] : __('Search tours...', 'elementary-child');
+        $title = !empty($instance['title']) ? $instance['title'] : __('Find Your Tour', 'hello-elementor-child');
+        $placeholder = !empty($instance['placeholder']) ? $instance['placeholder'] : __('Search tours...', 'hello-elementor-child');
         ?>
         <p>
-            <label for="<?php echo esc_attr($this->get_field_id('title')); ?>"><?php esc_html_e('Title:', 'elementary-child'); ?></label>
+            <label for="<?php echo esc_attr($this->get_field_id('title')); ?>"><?php esc_html_e('Title:', 'hello-elementor-child'); ?></label>
             <input class="widefat" id="<?php echo esc_attr($this->get_field_id('title')); ?>" name="<?php echo esc_attr($this->get_field_name('title')); ?>" type="text" value="<?php echo esc_attr($title); ?>">
         </p>
         <p>
-            <label for="<?php echo esc_attr($this->get_field_id('placeholder')); ?>"><?php esc_html_e('Search Placeholder:', 'elementary-child'); ?></label>
+            <label for="<?php echo esc_attr($this->get_field_id('placeholder')); ?>"><?php esc_html_e('Search Placeholder:', 'hello-elementor-child'); ?></label>
             <input class="widefat" id="<?php echo esc_attr($this->get_field_id('placeholder')); ?>" name="<?php echo esc_attr($this->get_field_name('placeholder')); ?>" type="text" value="<?php echo esc_attr($placeholder); ?>">
         </p>
         <?php
@@ -583,8 +583,8 @@ class BSV_Contact_Info_Widget extends WP_Widget {
     public function __construct() {
         parent::__construct(
             'bsv_contact_info',
-            __('BSV: Contact Information', 'elementary-child'),
-            array('description' => __('Displays contact information with icons', 'elementary-child'))
+            __('BSV: Contact Information', 'hello-elementor-child'),
+            array('description' => __('Displays contact information with icons', 'hello-elementor-child'))
         );
     }
     
@@ -700,7 +700,7 @@ class BSV_Contact_Info_Widget extends WP_Widget {
      * @param array $instance Previously saved values from database.
      */
     public function form($instance) {
-        $title = !empty($instance['title']) ? $instance['title'] : __('Contact Us', 'elementary-child');
+        $title = !empty($instance['title']) ? $instance['title'] : __('Contact Us', 'hello-elementor-child');
         $address = !empty($instance['address']) ? $instance['address'] : '';
         $phone = !empty($instance['phone']) ? $instance['phone'] : '';
         $email = !empty($instance['email']) ? $instance['email'] : '';
@@ -713,57 +713,57 @@ class BSV_Contact_Info_Widget extends WP_Widget {
         $linkedin = !empty($instance['linkedin']) ? $instance['linkedin'] : '';
         ?>
         <p>
-            <label for="<?php echo esc_attr($this->get_field_id('title')); ?>"><?php esc_html_e('Title:', 'elementary-child'); ?></label>
+            <label for="<?php echo esc_attr($this->get_field_id('title')); ?>"><?php esc_html_e('Title:', 'hello-elementor-child'); ?></label>
             <input class="widefat" id="<?php echo esc_attr($this->get_field_id('title')); ?>" name="<?php echo esc_attr($this->get_field_name('title')); ?>" type="text" value="<?php echo esc_attr($title); ?>">
         </p>
         
         <p>
-            <label for="<?php echo esc_attr($this->get_field_id('address')); ?>"><?php esc_html_e('Address:', 'elementary-child'); ?></label>
+            <label for="<?php echo esc_attr($this->get_field_id('address')); ?>"><?php esc_html_e('Address:', 'hello-elementor-child'); ?></label>
             <textarea class="widefat" id="<?php echo esc_attr($this->get_field_id('address')); ?>" name="<?php echo esc_attr($this->get_field_name('address')); ?>" rows="3"><?php echo esc_textarea($address); ?></textarea>
         </p>
         
         <p>
-            <label for="<?php echo esc_attr($this->get_field_id('phone')); ?>"><?php esc_html_e('Phone:', 'elementary-child'); ?></label>
+            <label for="<?php echo esc_attr($this->get_field_id('phone')); ?>"><?php esc_html_e('Phone:', 'hello-elementor-child'); ?></label>
             <input class="widefat" id="<?php echo esc_attr($this->get_field_id('phone')); ?>" name="<?php echo esc_attr($this->get_field_name('phone')); ?>" type="text" value="<?php echo esc_attr($phone); ?>">
         </p>
         
         <p>
-            <label for="<?php echo esc_attr($this->get_field_id('email')); ?>"><?php esc_html_e('Email:', 'elementary-child'); ?></label>
+            <label for="<?php echo esc_attr($this->get_field_id('email')); ?>"><?php esc_html_e('Email:', 'hello-elementor-child'); ?></label>
             <input class="widefat" id="<?php echo esc_attr($this->get_field_id('email')); ?>" name="<?php echo esc_attr($this->get_field_name('email')); ?>" type="email" value="<?php echo esc_attr($email); ?>">
         </p>
         
         <p>
-            <label for="<?php echo esc_attr($this->get_field_id('hours')); ?>"><?php esc_html_e('Business Hours:', 'elementary-child'); ?></label>
+            <label for="<?php echo esc_attr($this->get_field_id('hours')); ?>"><?php esc_html_e('Business Hours:', 'hello-elementor-child'); ?></label>
             <textarea class="widefat" id="<?php echo esc_attr($this->get_field_id('hours')); ?>" name="<?php echo esc_attr($this->get_field_name('hours')); ?>" rows="3"><?php echo esc_textarea($hours); ?></textarea>
         </p>
         
         <p>
             <input class="checkbox" type="checkbox" <?php checked($show_social); ?> id="<?php echo esc_attr($this->get_field_id('show_social')); ?>" name="<?php echo esc_attr($this->get_field_name('show_social')); ?>" value="1">
-            <label for="<?php echo esc_attr($this->get_field_id('show_social')); ?>"><?php esc_html_e('Show Social Icons', 'elementary-child'); ?></label>
+            <label for="<?php echo esc_attr($this->get_field_id('show_social')); ?>"><?php esc_html_e('Show Social Icons', 'hello-elementor-child'); ?></label>
         </p>
         
         <p>
-            <label for="<?php echo esc_attr($this->get_field_id('facebook')); ?>"><?php esc_html_e('Facebook URL:', 'elementary-child'); ?></label>
+            <label for="<?php echo esc_attr($this->get_field_id('facebook')); ?>"><?php esc_html_e('Facebook URL:', 'hello-elementor-child'); ?></label>
             <input class="widefat" id="<?php echo esc_attr($this->get_field_id('facebook')); ?>" name="<?php echo esc_attr($this->get_field_name('facebook')); ?>" type="url" value="<?php echo esc_url($facebook); ?>">
         </p>
         
         <p>
-            <label for="<?php echo esc_attr($this->get_field_id('twitter')); ?>"><?php esc_html_e('Twitter URL:', 'elementary-child'); ?></label>
+            <label for="<?php echo esc_attr($this->get_field_id('twitter')); ?>"><?php esc_html_e('Twitter URL:', 'hello-elementor-child'); ?></label>
             <input class="widefat" id="<?php echo esc_attr($this->get_field_id('twitter')); ?>" name="<?php echo esc_attr($this->get_field_name('twitter')); ?>" type="url" value="<?php echo esc_url($twitter); ?>">
         </p>
         
         <p>
-            <label for="<?php echo esc_attr($this->get_field_id('instagram')); ?>"><?php esc_html_e('Instagram URL:', 'elementary-child'); ?></label>
+            <label for="<?php echo esc_attr($this->get_field_id('instagram')); ?>"><?php esc_html_e('Instagram URL:', 'hello-elementor-child'); ?></label>
             <input class="widefat" id="<?php echo esc_attr($this->get_field_id('instagram')); ?>" name="<?php echo esc_attr($this->get_field_name('instagram')); ?>" type="url" value="<?php echo esc_url($instagram); ?>">
         </p>
         
         <p>
-            <label for="<?php echo esc_attr($this->get_field_id('youtube')); ?>"><?php esc_html_e('YouTube URL:', 'elementary-child'); ?></label>
+            <label for="<?php echo esc_attr($this->get_field_id('youtube')); ?>"><?php esc_html_e('YouTube URL:', 'hello-elementor-child'); ?></label>
             <input class="widefat" id="<?php echo esc_attr($this->get_field_id('youtube')); ?>" name="<?php echo esc_attr($this->get_field_name('youtube')); ?>" type="url" value="<?php echo esc_url($youtube); ?>">
         </p>
         
         <p>
-            <label for="<?php echo esc_attr($this->get_field_id('linkedin')); ?>"><?php esc_html_e('LinkedIn URL:', 'elementary-child'); ?></label>
+            <label for="<?php echo esc_attr($this->get_field_id('linkedin')); ?>"><?php esc_html_e('LinkedIn URL:', 'hello-elementor-child'); ?></label>
             <input class="widefat" id="<?php echo esc_attr($this->get_field_id('linkedin')); ?>" name="<?php echo esc_attr($this->get_field_name('linkedin')); ?>" type="url" value="<?php echo esc_url($linkedin); ?>">
         </p>
         <?php

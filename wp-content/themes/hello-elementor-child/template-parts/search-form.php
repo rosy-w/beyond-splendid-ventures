@@ -18,7 +18,7 @@ $placeholder = isset($args['placeholder']) ? $args['placeholder'] : 'Search...';
         <div class="row">
             <div class="col-md-3">
                 <div class="form-group">
-                    <label for="tour_search"><?php echo esc_html__('Search Tours', 'elementary-child'); ?></label>
+                    <label for="tour_search"><?php echo esc_html__('Search Tours', 'hello-elementor-child'); ?></label>
                     <input type="text" id="tour_search" class="form-control" placeholder="<?php echo esc_attr($placeholder); ?>" value="<?php echo get_search_query(); ?>" name="s" />
                     <input type="hidden" name="post_type" value="tour" />
                 </div>
@@ -26,7 +26,7 @@ $placeholder = isset($args['placeholder']) ? $args['placeholder'] : 'Search...';
             
             <div class="col-md-3">
                 <div class="form-group">
-                    <label for="tour_destination"><?php echo esc_html__('Destination', 'elementary-child'); ?></label>
+                    <label for="tour_destination"><?php echo esc_html__('Destination', 'hello-elementor-child'); ?></label>
                     <?php
                     $destinations = get_terms(array(
                         'taxonomy' => 'destination_category',
@@ -36,7 +36,7 @@ $placeholder = isset($args['placeholder']) ? $args['placeholder'] : 'Search...';
                     if (!empty($destinations) && !is_wp_error($destinations)) :
                     ?>
                         <select id="tour_destination" name="destination_category" class="form-control">
-                            <option value=""><?php echo esc_html__('All Destinations', 'elementary-child'); ?></option>
+                            <option value=""><?php echo esc_html__('All Destinations', 'hello-elementor-child'); ?></option>
                             <?php foreach ($destinations as $destination) : ?>
                                 <option value="<?php echo esc_attr($destination->slug); ?>"><?php echo esc_html($destination->name); ?></option>
                             <?php endforeach; ?>
@@ -47,13 +47,13 @@ $placeholder = isset($args['placeholder']) ? $args['placeholder'] : 'Search...';
             
             <div class="col-md-3">
                 <div class="form-group">
-                    <label for="tour_duration"><?php echo esc_html__('Duration', 'elementary-child'); ?></label>
+                    <label for="tour_duration"><?php echo esc_html__('Duration', 'hello-elementor-child'); ?></label>
                     <select id="tour_duration" name="duration" class="form-control">
-                        <option value=""><?php echo esc_html__('Any Duration', 'elementary-child'); ?></option>
-                        <option value="1-3"><?php echo esc_html__('1-3 Days', 'elementary-child'); ?></option>
-                        <option value="4-7"><?php echo esc_html__('4-7 Days', 'elementary-child'); ?></option>
-                        <option value="8-14"><?php echo esc_html__('8-14 Days', 'elementary-child'); ?></option>
-                        <option value="15+"><?php echo esc_html__('15+ Days', 'elementary-child'); ?></option>
+                        <option value=""><?php echo esc_html__('Any Duration', 'hello-elementor-child'); ?></option>
+                        <option value="1-3"><?php echo esc_html__('1-3 Days', 'hello-elementor-child'); ?></option>
+                        <option value="4-7"><?php echo esc_html__('4-7 Days', 'hello-elementor-child'); ?></option>
+                        <option value="8-14"><?php echo esc_html__('8-14 Days', 'hello-elementor-child'); ?></option>
+                        <option value="15+"><?php echo esc_html__('15+ Days', 'hello-elementor-child'); ?></option>
                     </select>
                 </div>
             </div>
@@ -61,7 +61,7 @@ $placeholder = isset($args['placeholder']) ? $args['placeholder'] : 'Search...';
             <div class="col-md-3">
                 <div class="form-group">
                     <label for="tour_submit">&nbsp;</label>
-                    <button type="submit" id="tour_submit" class="btn btn-primary btn-block"><?php echo esc_html__('Search Tours', 'elementary-child'); ?></button>
+                    <button type="submit" id="tour_submit" class="btn btn-primary btn-block"><?php echo esc_html__('Search Tours', 'hello-elementor-child'); ?></button>
                 </div>
             </div>
         </div>
@@ -76,7 +76,7 @@ $placeholder = isset($args['placeholder']) ? $args['placeholder'] : 'Search...';
                 <input type="hidden" name="post_type" value="destination" />
             </div>
             <div class="col-md-3">
-                <button type="submit" class="btn btn-primary btn-block"><?php echo esc_html__('Search', 'elementary-child'); ?></button>
+                <button type="submit" class="btn btn-primary btn-block"><?php echo esc_html__('Search', 'hello-elementor-child'); ?></button>
             </div>
         </div>
     </form>
@@ -96,15 +96,15 @@ $placeholder = isset($args['placeholder']) ? $args['placeholder'] : 'Search...';
             <div class="search-categories">
                 <label>
                     <input type="radio" name="post_type" value="post" checked />
-                    <?php echo esc_html__('Blog', 'elementary-child'); ?>
+                    <?php echo esc_html__('Blog', 'hello-elementor-child'); ?>
                 </label>
                 <label>
                     <input type="radio" name="post_type" value="tour" />
-                    <?php echo esc_html__('Tours', 'elementary-child'); ?>
+                    <?php echo esc_html__('Tours', 'hello-elementor-child'); ?>
                 </label>
                 <label>
                     <input type="radio" name="post_type" value="destination" />
-                    <?php echo esc_html__('Destinations', 'elementary-child'); ?>
+                    <?php echo esc_html__('Destinations', 'hello-elementor-child'); ?>
                 </label>
             </div>
         </form>
@@ -117,7 +117,7 @@ $placeholder = isset($args['placeholder']) ? $args['placeholder'] : 'Search...';
             <input type="text" class="form-control" placeholder="<?php echo esc_attr($placeholder); ?>" value="<?php echo get_search_query(); ?>" name="s" />
             <div class="input-group-append">
                 <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-search"></i> <?php echo esc_html__('Search', 'elementary-child'); ?>
+                    <i class="fas fa-search"></i> <?php echo esc_html__('Search', 'hello-elementor-child'); ?>
                 </button>
             </div>
         </div>
