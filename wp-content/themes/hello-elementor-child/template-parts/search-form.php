@@ -4,7 +4,7 @@
  *
  * @link https://developer.wordpress.org/themes/basics/template-hierarchy/
  *
- * @package Elementary Child
+ * @package Hello Elementor Child
  */
 
 $search_type = isset($args['type']) ? $args['type'] : 'general';

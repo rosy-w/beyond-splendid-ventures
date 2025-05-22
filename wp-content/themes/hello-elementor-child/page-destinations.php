@@ -59,7 +59,7 @@ get_header();
                     <h2>Explore Our Destinations</h2>
                     <p class="section-subtitle">Click on the regions to discover our available destinations</p>
                 </div>
-                
+
                 <div class="world-map-container">
                     <div class="world-map">
                         <!-- SVG World Map will be loaded here via JavaScript -->
@@ -78,7 +78,7 @@ get_header();
             'taxonomy' => 'destination_continent',
             'hide_empty' => true,
         ));
-        
+
         if (!empty($continents) && !is_wp_error($continents)) :
             ?>
             <section class="destinations-by-continent">
@@ -87,7 +87,7 @@ get_header();
                         <h2>Destinations by Continent</h2>
                         <p class="section-subtitle">Explore our destinations around the world</p>
                     </div>
-                    
+
                     <div class="continent-tabs">
                         <ul class="nav nav-tabs" id="continentTabs" role="tablist">
                             <?php
@@ -106,14 +106,14 @@ get_header();
                             endforeach;
                             ?>
                         </ul>
-                        
+
                         <div class="tab-content" id="continentTabsContent">
                             <?php
                             $first_tab = true;
                             foreach ($continents as $continent) :
                                 $tab_id = 'continent-' . $continent->slug;
                                 $active_class = $first_tab ? 'show active' : '';
-                                
+
                                 // Get destinations for this continent
                                 $args = array(
                                     'post_type' => 'destination',
@@ -126,14 +126,14 @@ get_header();
                                         ),
                                     ),
                                 );
-                                
+
                                 $destinations = new WP_Query($args);
                                 ?>
                                 <div class="tab-pane fade <?php echo $active_class; ?>" id="<?php echo esc_attr($tab_id); ?>" role="tabpanel" aria-labelledby="<?php echo esc_attr($tab_id); ?>-tab">
                                     <?php if ($destinations->have_posts()) : ?>
                                         <div class="row">
                                             <?php while ($destinations->have_posts()) : $destinations->the_post(); ?>
-                                                <div class="col-md-6 col-lg-4">
+                                                <div class="col-sm-12 col-md-4">
                                                     <div class="destination-card">
                                                         <div class="destination-image">
                                                             <?php if (has_post_thumbnail()) : ?>
@@ -160,7 +160,7 @@ get_header();
                                             <p>No destinations found for <?php echo esc_html($continent->name); ?>.</p>
                                         </div>
                                     <?php endif; ?>
-                                    
+
                                     <?php wp_reset_postdata(); ?>
                                 </div>
                                 <?php
@@ -182,7 +182,7 @@ get_header();
                     <h2>Featured Destinations</h2>
                     <p class="section-subtitle">Explore our most popular destinations</p>
                 </div>
-                
+
                 <div class="row">
                     <?php
                     // Get featured destinations
@@ -197,9 +197,9 @@ get_header();
                             )
                         )
                     );
-                    
+
                     $featured_destinations = new WP_Query($args);
-                    
+
                     if ($featured_destinations->have_posts()) :
                         while ($featured_destinations->have_posts()) : $featured_destinations->the_post();
                             ?>
@@ -269,7 +269,7 @@ get_header();
                     <h2>All Destinations</h2>
                     <p class="section-subtitle">Explore all of our available destinations</p>
                 </div>
-                
+
                 <div class="row">
                     <?php
                     // Get all destinations
@@ -279,13 +279,13 @@ get_header();
                         'posts_per_page' => 9,
                         'paged' => $paged
                     );
-                    
+
                     $destinations = new WP_Query($args);
-                    
+
                     if ($destinations->have_posts()) :
                         while ($destinations->have_posts()) : $destinations->the_post();
                             ?>
-                            <div class="col-md-6 col-lg-4">
+                            <div class="col-sm-12 col-md-4">
                                 <div class="destination-card">
                                     <div class="destination-image">
                                         <?php if (has_post_thumbnail()) : ?>
@@ -307,7 +307,7 @@ get_header();
                             </div>
                             <?php
                         endwhile;
-                        
+
                         // Pagination
                         ?>
                         <div class="col-12">
@@ -326,13 +326,13 @@ get_header();
                             </div>
                         </div>
                         <?php
-                        
+
                         wp_reset_postdata();
                     else :
                         // Display placeholder if no destinations are found
                         for ($i = 1; $i <= 6; $i++) {
                             ?>
-                            <div class="col-md-6 col-lg-4">
+                            <div class="col-sm-12 col-md-4">
                                 <div class="destination-card">
                                     <div class="destination-image">
                                         <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/default-destination.jpg" alt="Destination">
@@ -387,3 +387,5 @@ get_header();
 
 <?php
 get_footer();
+
+?>
