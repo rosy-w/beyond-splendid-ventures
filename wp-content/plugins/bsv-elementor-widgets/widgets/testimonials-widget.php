@@ -821,59 +821,52 @@ class BSV_Testimonials_Widget extends \Elementor\Widget_Base {
                         // Get testimonial meta
                         $author_name = get_post_meta(get_the_ID(), 'testimonial_author', true);
                         $author_title = get_post_meta(get_the_ID(), 'testimonial_title', true);
-                        $rating = get_post_meta(get_the_ID(), 'testimonial_rating', true);
                         
                         // Feature image
                         $image_url = get_the_post_thumbnail_url(get_the_ID(), 'thumbnail');
-                        if (!$image_url) {
-                            $image_url = BSV_ELEMENTOR_WIDGETS_URL . 'assets/images/avatar-placeholder.jpg';
-                        }
                         
                         // Format testimonial content
                         $content = get_the_content();
                         $content = apply_filters('the_content', $content);
                         $content = str_replace(']]>', ']]&gt;', $content);
+                        
+                        // Get first letter of author name for avatar
+                        $initials = '';
+                        if (!empty($author_name)) {
+                            $name_parts = explode(' ', $author_name);
+                            $initials = strtoupper(substr($name_parts[0], 0, 1));
+                            if (count($name_parts) > 1) {
+                                $initials .= strtoupper(substr(end($name_parts), 0, 1));
+                            }
+                        }
                         ?>
                         
                         <div class="bsv-testimonial-item">
                             <div class="bsv-testimonial-content">
+                                <i class="fas fa-quote-left bsv-testimonial-quote-icon"></i>
                                 <?php echo $content; ?>
                             </div>
                             
-                            <div class="bsv-testimonial-footer">
-                                <div class="bsv-testimonial-author">
-                                    <?php if ($image_url) : ?>
-                                        <div class="bsv-testimonial-author-image">
-                                            <img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($author_name); ?>">
-                                        </div>
-                                    <?php endif; ?>
-                                    
-                                    <div class="bsv-testimonial-author-info">
-                                        <?php if (!empty($author_name)) : ?>
-                                            <h4 class="bsv-testimonial-author-name"><?php echo esc_html($author_name); ?></h4>
-                                        <?php endif; ?>
-                                        
-                                        <?php if (!empty($author_title)) : ?>
-                                            <p class="bsv-testimonial-author-title"><?php echo esc_html($author_title); ?></p>
-                                        <?php endif; ?>
+                            <div class="bsv-testimonial-author">
+                                <?php if ($image_url) : ?>
+                                    <div class="bsv-testimonial-author-image">
+                                        <img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($author_name); ?>">
                                     </div>
-                                </div>
-                                
-                                <?php if (!empty($rating) && $rating > 0) : ?>
-                                    <div class="bsv-testimonial-rating">
-                                        <?php
-                                        // Display rating stars
-                                        $rating = min(5, max(1, intval($rating)));
-                                        for ($i = 1; $i <= 5; $i++) {
-                                            if ($i <= $rating) {
-                                                echo '<i class="fas fa-star"></i>';
-                                            } else {
-                                                echo '<i class="far fa-star"></i>';
-                                            }
-                                        }
-                                        ?>
+                                <?php else : ?>
+                                    <div class="bsv-testimonial-author-initials">
+                                        <?php echo esc_html($initials); ?>
                                     </div>
                                 <?php endif; ?>
+                                
+                                <div class="bsv-testimonial-author-info">
+                                    <?php if (!empty($author_name)) : ?>
+                                        <h4 class="bsv-testimonial-author-name"><?php echo esc_html($author_name); ?></h4>
+                                    <?php endif; ?>
+                                    
+                                    <?php if (!empty($author_title)) : ?>
+                                        <p class="bsv-testimonial-author-title"><?php echo esc_html($author_title); ?></p>
+                                    <?php endif; ?>
+                                </div>
                             </div>
                         </div>
                         

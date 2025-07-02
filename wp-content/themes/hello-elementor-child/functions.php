@@ -39,11 +39,9 @@ function hello_elementor_child_enqueue_styles_scripts() {
     );
     
     // Enqueue Font Awesome
-    wp_enqueue_style('font-awesome', 
-        'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css', 
-        array(), 
-        '5.15.3'
-    );
+    add_action('wp_enqueue_scripts', function() {
+    wp_enqueue_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
+    });
     
     // Enqueue custom scripts
     wp_enqueue_script('hello-elementor-child-scripts', 
@@ -198,7 +196,7 @@ function hello_elementor_child_body_classes($classes) {
     }
     
     // Add class for destination pages
-    if (is_page_template('page-destinations.php') || is_tax('destination_category')) {
+    if (is_page_template('page-destinations.php') || is_tax('destination_country')) {
         $classes[] = 'destination-page';
     }
     
@@ -232,7 +230,7 @@ function hello_elementor_child_tour_columns($columns) {
         'image' => __('Featured Image', 'hello-elementor-child'),
         'price' => __('Price', 'hello-elementor-child'),
         'duration' => __('Duration', 'hello-elementor-child'),
-        'destination' => __('Destination', 'hello-elementor-child'),
+        'destination_country' => __('Destination Country', 'hello-elementor-child'),
         'date' => $columns['date'],
     );
     return $columns;
@@ -252,19 +250,25 @@ function hello_elementor_child_tour_column_content($column, $post_id) {
             }
             break;
         case 'price':
-            echo get_post_meta($post_id, 'tour_price', true) ? '$' . get_post_meta($post_id, 'tour_price', true) : '—';
+            $price = get_post_meta($post_id, 'tour_price', true);
+            if (!is_array($price)) {
+                echo $price ? '$' . esc_html($price) : '—';
+            } else {
+                error_log('Unexpected array value for tour_price in post ' . $post_id);
+                echo '—';
+            }
             break;
         case 'duration':
-            echo get_post_meta($post_id, 'tour_duration', true) ? get_post_meta($post_id, 'tour_duration', true) . ' days' : '—';
+            echo get_post_meta($post_id, 'tour_duration', true) ? get_post_meta($post_id, 'tour_duration',true) . ' days' : '—';
             break;
-        case 'destination':
-            $terms = get_the_terms($post_id, 'destination_category');
+        case 'destination_country':
+            $terms = get_the_terms($post_id, 'destination_country');
             if ($terms && !is_wp_error($terms)) {
-                $destinations = array();
+                $countries = array();
                 foreach ($terms as $term) {
-                    $destinations[] = '<a href="' . get_term_link($term) . '">' . $term->name . '</a>';
+                    $countries[] = '<a href="' . get_term_link($term) . '">' . $term->name . '</a>';
                 }
-                echo implode(', ', $destinations);
+                echo implode(', ', $countries);
             } else {
                 echo '—';
             }

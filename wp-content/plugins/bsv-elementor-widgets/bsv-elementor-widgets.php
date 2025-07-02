@@ -56,6 +56,24 @@ final class BSV_Elementor_Widgets {
      */
     public function __construct() {
         add_action('plugins_loaded', [$this, 'init']);
+        
+        // Add compatibility check
+        register_activation_hook(__FILE__, [$this, 'check_compatibility']);
+    }
+
+    /**
+     * Check plugin compatibility on activation
+     */
+    public function check_compatibility() {
+        // Check if Elementor is active
+        if (!is_plugin_active('elementor/elementor.php')) {
+            deactivate_plugins(plugin_basename(__FILE__));
+            wp_die(
+                esc_html__('BSV Elementor Widgets requires Elementor to be installed and activated.', 'bsv-elementor-widgets'),
+                esc_html__('Plugin Activation Error', 'bsv-elementor-widgets'),
+                ['back_link' => true]
+            );
+        }
     }
 
     /**
@@ -80,6 +98,14 @@ final class BSV_Elementor_Widgets {
             return;
         }
 
+        // Wait for Elementor to fully initialize
+        add_action('elementor/init', [$this, 'elementor_init']);
+    }
+
+    /**
+     * Initialize after Elementor is fully loaded
+     */
+    public function elementor_init() {
         // Add widget categories
         add_action('elementor/elements/categories_registered', [$this, 'add_elementor_widget_categories']);
 
@@ -164,17 +190,49 @@ final class BSV_Elementor_Widgets {
      * Register widgets
      */
     public function register_widgets() {
-        // Include widget files
-        require_once BSV_ELEMENTOR_WIDGETS_PATH . 'widgets/tours-widget.php';
-        require_once BSV_ELEMENTOR_WIDGETS_PATH . 'widgets/destinations-widget.php';
-        require_once BSV_ELEMENTOR_WIDGETS_PATH . 'widgets/testimonials-widget.php';
-        require_once BSV_ELEMENTOR_WIDGETS_PATH . 'widgets/unified-search-widget.php'; //Added Unified Search Widget
+        // Ensure Elementor is fully loaded
+        if (!class_exists('\Elementor\Plugin') || !did_action('elementor/loaded')) {
+            return;
+        }
 
-        // Register widgets
-        \Elementor\Plugin::instance()->widgets_manager->register_widget_type(new \BSV_Tours_Widget());
-        \Elementor\Plugin::instance()->widgets_manager->register_widget_type(new \BSV_Destinations_Widget());
-        \Elementor\Plugin::instance()->widgets_manager->register_widget_type(new \BSV_Testimonials_Widget());
-        \Elementor\Plugin::instance()->widgets_manager->register_widget_type(new \BSV_Unified_Search_Widget()); //Register Unified Search Widget
+        // Include widget files with error handling
+        $widget_files = [
+            'tours-widget.php',
+            'destinations-widget.php',
+            'testimonials-widget.php',
+            'unified-search-widget.php'
+        ];
+
+        foreach ($widget_files as $file) {
+            $file_path = BSV_ELEMENTOR_WIDGETS_PATH . 'widgets/' . $file;
+            if (file_exists($file_path)) {
+                try {
+                    require_once $file_path;
+                } catch (Exception $e) {
+                    error_log('BSV Elementor Widgets - Error loading widget file ' . $file . ': ' . $e->getMessage());
+                    continue;
+                }
+            }
+        }
+
+        // Register widgets with improved error handling
+        $widgets = [
+            'BSV_Tours_Widget',
+            'BSV_Destinations_Widget', 
+            'BSV_Testimonials_Widget',
+            'BSV_Unified_Search_Widget'
+        ];
+
+        foreach ($widgets as $widget_class) {
+            try {
+                if (class_exists($widget_class)) {
+                    $widget_instance = new $widget_class();
+                    \Elementor\Plugin::instance()->widgets_manager->register_widget_type($widget_instance);
+                }
+            } catch (Exception $e) {
+                error_log('BSV Elementor Widgets - Error registering widget ' . $widget_class . ': ' . $e->getMessage());
+            }
+        }
     }
 
     /**
@@ -200,6 +258,9 @@ final class BSV_Elementor_Widgets {
             self::VERSION,
             true
         );
+        
+        // Enqueue the main script
+        wp_enqueue_script('bsv-elementor-widgets-js');
     }
 }
 

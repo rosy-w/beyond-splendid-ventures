@@ -136,32 +136,32 @@ function bsv_register_custom_post_types() {
 
     register_post_type('destination', $destination_args);
 
-    // Destination Category Taxonomy
-    $destination_cat_labels = array(
-        'name'              => _x('Destination Categories', 'taxonomy general name', 'hello-elementor-child'),
-        'singular_name'     => _x('Destination Category', 'taxonomy singular name', 'hello-elementor-child'),
-        'search_items'      => __('Search Destination Categories', 'hello-elementor-child'),
-        'all_items'         => __('All Destination Categories', 'hello-elementor-child'),
-        'parent_item'       => __('Parent Destination Category', 'hello-elementor-child'),
-        'parent_item_colon' => __('Parent Destination Category:', 'hello-elementor-child'),
-        'edit_item'         => __('Edit Destination Category', 'hello-elementor-child'),
-        'update_item'       => __('Update Destination Category', 'hello-elementor-child'),
-        'add_new_item'      => __('Add New Destination Category', 'hello-elementor-child'),
-        'new_item_name'     => __('New Destination Category Name', 'hello-elementor-child'),
-        'menu_name'         => __('Destination Categories', 'hello-elementor-child'),
+    // Destination Country Taxonomy
+    $destination_country_labels = array(
+        'name'              => _x('Destination Country', 'taxonomy general name', 'hello-elementor-child'),
+        'singular_name'     => _x('Destination Country', 'taxonomy singular name', 'hello-elementor-child'),
+        'search_items'      => __('Search Destination Countries', 'hello-elementor-child'),
+        'all_items'         => __('All Destination Countries', 'hello-elementor-child'),
+        'parent_item'       => __('Parent Destination Country', 'hello-elementor-child'),
+        'parent_item_colon' => __('Parent Destination Country:', 'hello-elementor-child'),
+        'edit_item'         => __('Edit Destination Country', 'hello-elementor-child'),
+        'update_item'       => __('Update Destination Country', 'hello-elementor-child'),
+        'add_new_item'      => __('Add New Destination Country', 'hello-elementor-child'),
+        'new_item_name'     => __('New Destination Country Name', 'hello-elementor-child'),
+        'menu_name'         => __('Destination Countries', 'hello-elementor-child'),
     );
 
-    $destination_cat_args = array(
+    $destination_country_args = array(
         'hierarchical'      => true,
-        'labels'            => $destination_cat_labels,
+        'labels'            => $destination_country_labels,
         'show_ui'           => true,
         'show_admin_column' => true,
         'query_var'         => true,
-        'rewrite'           => array('slug' => 'destination-category'),
+        'rewrite'           => array('slug' => 'destination-country'),
         'show_in_rest'      => true,
     );
 
-    register_taxonomy('destination_category', array('destination', 'tour'), $destination_cat_args);
+    register_taxonomy('destination_country', array('destination', 'tour'), $destination_country_args);
 
     // Destination Continent Taxonomy
     $continent_labels = array(
@@ -903,7 +903,7 @@ function bsv_destination_custom_column($column, $post_id) {
             } else {
                 echo '—';
             }
-            break;
+            break;     
     }
 }
 add_action('manage_destination_posts_custom_column', 'bsv_destination_custom_column', 10, 2);
@@ -1049,7 +1049,7 @@ function bsv_add_tour_filters() {
         ));
         
         // Filter by destination
-        $taxonomy = 'destination_category';
+        $taxonomy = 'destination_country';
         $selected = isset($_GET[$taxonomy]) ? $_GET[$taxonomy] : '';
         $info_taxonomy = get_taxonomy($taxonomy);
         wp_dropdown_categories(array(

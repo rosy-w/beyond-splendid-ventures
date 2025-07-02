@@ -1,4 +1,3 @@
-
 <?php
 class BSV_Unified_Search_Widget extends \Elementor\Widget_Base {
     public function get_name() {
@@ -137,7 +136,7 @@ class BSV_Unified_Search_Widget extends \Elementor\Widget_Base {
                     'size' => 100,
                 ],
                 'selectors' => [
-                    '{{WRAPPER}} .filter-row' => 'width: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .filter-column' => 'width: {{SIZE}}{{UNIT}};',
                 ],
             ]
         );
@@ -340,10 +339,10 @@ class BSV_Unified_Search_Widget extends \Elementor\Widget_Base {
     protected function render() {
         $settings = $this->get_settings_for_display();
         ?>
-        <div class="bsv-unified-search">
+        <div class="bsv-unified-search ">
             <form role="search" method="get" action="<?php echo esc_url(home_url('/')); ?>">
                 <div class="search-container">
-                    <div class="search-row">
+                    <div class="search-column">
                         <div class="search-input-wrap">
                             <input type="text" name="s" placeholder="<?php echo esc_attr__('Search...', 'bsv-elementor-widgets'); ?>" value="<?php echo get_search_query(); ?>" class="search-input">
                         </div>
@@ -353,7 +352,7 @@ class BSV_Unified_Search_Widget extends \Elementor\Widget_Base {
                         <?php endif; ?>
 
                         <?php if ($settings['show_filters'] === 'yes'): ?>
-                            <div class="filter-row">
+                            <div class="filter-column">
                                 <div class="filter-item">
                                     <select name="destination_category" class="filter-select">
                                         <option value=""><?php echo esc_html__('All Locations', 'bsv-elementor-widgets'); ?></option>

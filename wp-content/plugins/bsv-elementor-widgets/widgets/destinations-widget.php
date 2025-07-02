@@ -178,6 +178,18 @@ class BSV_Destinations_Widget extends \Elementor\Widget_Base {
                 ],
             ]
         );
+        $this->add_control(
+            'enable_pagination',
+            [
+                'label' => esc_html__('Enable Pagination', 'bsv-elementor-widgets'),
+                'type' => \Elementor\Controls_Manager::SWITCHER,
+                'label_on' => esc_html__('Yes', 'bsv-elementor-widgets'),
+                'label_off' => esc_html__('No', 'bsv-elementor-widgets'),
+                'return_value' => 'yes',
+                'default' => 'no',
+                'separator' => 'before',
+            ]
+        );
 
         $this->end_controls_section();
 
@@ -857,16 +869,25 @@ class BSV_Destinations_Widget extends \Elementor\Widget_Base {
      */
     protected function render() {
         $settings = $this->get_settings_for_display();
+        // Handle pagination
+        $paged = max(1, get_query_var('paged') ?: (get_query_var('page') ?: 1));
         
-        // Query args
-        $args = array(
-            'post_type' => 'destination',
-            'posts_per_page' => $settings['number_of_destinations'],
-            'post_status' => 'publish',
-            'orderby' => 'date',
-            'order' => 'DESC',
-        );
-        
+         // Query args
+    $args = array(
+        'post_type' => 'destination',
+        'post_status' => 'publish',
+        'orderby' => 'date',
+        'order' => 'DESC',
+    );
+     // Set posts per page based on pagination setting
+    if ($settings['enable_pagination'] === 'yes') {
+        $args['posts_per_page'] = $settings['number_of_destinations'];
+        $args['paged'] = $paged;
+    } else {
+        // If pagination is disabled, respect the number of destinations setting
+        $args['posts_per_page'] = $settings['number_of_destinations'];
+        $args['no_found_rows'] = true; // Optimize query when not paginating
+    }
         // Add featured filter
         if ($settings['show_featured_only'] === 'yes') {
             $args['meta_query'] = array(
@@ -925,21 +946,24 @@ class BSV_Destinations_Widget extends \Elementor\Widget_Base {
         <div class="bsv-destinations-widget">
             <?php if (!empty($settings['title']) || !empty($settings['subtitle'])) : ?>
                 <div class="bsv-section-header">
-                    <?php if (!empty($settings['title'])) : ?>
-                        <h2 class="bsv-destinations-title"><?php echo esc_html($settings['title']); ?></h2>
-                    <?php endif; ?>
-                    
                     <?php if (!empty($settings['subtitle'])) : ?>
                         <p class="bsv-destinations-subtitle"><?php echo esc_html($settings['subtitle']); ?></p>
+                    <?php endif; ?>
+                    <?php if (!empty($settings['title'])) : ?>
+                        <h2 class="bsv-destinations-title"><?php echo esc_html($settings['title']); ?></h2>
                     <?php endif; ?>
                 </div>
             <?php endif; ?>
             
             <div class="bsv-destinations-container">
-                <div class="row">
+                <div class="row g-3 justify-content-start"> <!-- Added gutter spacing with g-4 -->
                     <?php
+                    $column_class = 'col-xl-3 col-lg-3 col-md-6 col-sm-6'; // More specific column classes
+                    $counter = 0;
+                    
                     if ($destinations->have_posts()) :
                         while ($destinations->have_posts()) : $destinations->the_post();
+                            $counter++;
                             // Get destination meta
                             $destination_location = get_post_meta(get_the_ID(), 'destination_location', true);
                             $destination_excerpt = $settings['show_description'] === 'yes' ? wp_trim_words(get_the_excerpt(), $settings['description_length']) : '';
@@ -949,13 +973,14 @@ class BSV_Destinations_Widget extends \Elementor\Widget_Base {
                             if (!$image_url) {
                                 $image_url = BSV_ELEMENTOR_WIDGETS_URL . 'assets/images/placeholder.jpg';
                             }
-                            
                             // Determine card layout
                             $card_layout = $settings['card_layout'];
+
                             ?>
                             
                             <div class="<?php echo esc_attr($column_class); ?> bsv-destination-card-wrapper">
-                                <div class="bsv-destination-card">
+                                <div class="bsv-destination-card h-100"> <!-- Added h-100 for equal height -->
+                                    <!-- Rest of your card content remains the same -->
                                     <div class="bsv-destination-image">
                                         <a href="<?php the_permalink(); ?>">
                                             <img src="<?php echo esc_url($image_url); ?>" alt="<?php the_title_attribute(); ?>">
@@ -1008,8 +1033,7 @@ class BSV_Destinations_Widget extends \Elementor\Widget_Base {
                             <p><?php echo esc_html__('No destinations found.', 'bsv-elementor-widgets'); ?></p>
                         </div>
                     <?php endif; ?>
-                </div>
-                
+                    </div>
                 <?php if ($settings['show_view_all'] === 'yes' && !empty($settings['view_all_url']['url'])) : ?>
                     <div class="bsv-view-all-button-wrapper text-center">
                         <a href="<?php echo esc_url($settings['view_all_url']['url']); ?>" 
@@ -1021,6 +1045,22 @@ class BSV_Destinations_Widget extends \Elementor\Widget_Base {
                     </div>
                 <?php endif; ?>
             </div>
+             <!-- Pagination - Only show if enabled and needed-->
+            <?php if ($settings['enable_pagination'] === 'yes' && $destinations->max_num_pages > 1) : ?>
+                <div class="bsv-destinations-pagination">
+                    <?php
+                    echo paginate_links(array(
+                        'base' => str_replace(999999999, '%#%', esc_url(get_pagenum_link(999999999))),
+                        'format' => '?paged=%#%',
+                        'current' => $paged,
+                        'total' => $destinations->max_num_pages,
+                        'prev_text' => '<i class="fas fa-chevron-left"></i>',
+                        'next_text' => '<i class="fas fa-chevron-right"></i>',
+                    ));
+                    ?>
+                </div>
+            <?php endif; ?>
+
         </div>
         <?php
     }

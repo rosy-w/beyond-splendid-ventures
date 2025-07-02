@@ -127,7 +127,18 @@ class BSV_Tours_Widget extends \Elementor\Widget_Base {
                 'multiple' => true,
             ]
         );
-
+        $this->add_control(
+            'enable_pagination',
+            [
+                'label' => esc_html__('Enable Pagination', 'bsv-elementor-widgets'),
+                'type' => \Elementor\Controls_Manager::SWITCHER,
+                'label_on' => esc_html__('Yes', 'bsv-elementor-widgets'),
+                'label_off' => esc_html__('No', 'bsv-elementor-widgets'),
+                'return_value' => 'yes',
+                'default' => 'no',
+                'separator' => 'before',
+            ]
+        );
         $this->add_control(
             'show_view_all',
             [
@@ -806,15 +817,26 @@ class BSV_Tours_Widget extends \Elementor\Widget_Base {
      */
     protected function render() {
         $settings = $this->get_settings_for_display();
+        // Handle pagination
+        $paged = max(1, get_query_var('paged') ?: (get_query_var('page') ?: 1));
         
         // Query args
         $args = array(
             'post_type' => 'tour',
-            'posts_per_page' => $settings['number_of_tours'],
+            //'posts_per_page' => $settings['number_of_tours'],
             'post_status' => 'publish',
             'orderby' => 'date',
             'order' => 'DESC',
         );
+         // Set posts per page based on pagination setting
+        if ($settings['enable_pagination'] === 'yes') {
+            $args['posts_per_page'] = $settings['number_of_tours'];
+            $args['paged'] = $paged;
+        } else {
+            // If pagination is disabled, respect the number of tours setting
+            $args['posts_per_page'] = $settings['number_of_tours'];
+            $args['no_found_rows'] = true; // Optimize query when not paginating
+        }
         
         // Add featured filter
         if ($settings['show_featured_only'] === 'yes') {
@@ -862,19 +884,21 @@ class BSV_Tours_Widget extends \Elementor\Widget_Base {
         <div class="bsv-tours-widget">
             <?php if (!empty($settings['title']) || !empty($settings['subtitle'])) : ?>
                 <div class="bsv-section-header">
+                    <?php if (!empty($settings['subtitle'])) : ?>
+                        <p class="bsv-tours-subtitle"><?php echo esc_html($settings['subtitle']); ?></p>
+                    <?php endif; ?>
                     <?php if (!empty($settings['title'])) : ?>
                         <h2 class="bsv-tours-title"><?php echo esc_html($settings['title']); ?></h2>
                     <?php endif; ?>
                     
-                    <?php if (!empty($settings['subtitle'])) : ?>
-                        <p class="bsv-tours-subtitle"><?php echo esc_html($settings['subtitle']); ?></p>
-                    <?php endif; ?>
                 </div>
             <?php endif; ?>
             
             <div class="bsv-tours-container">
-                <div class="row">
+                <div class="row g-4">
                     <?php
+                    $column_class = 'col-xl-4 col-lg-4 col-md-6 col-sm-12'; // More specific column classes
+                    $counter = 0;
                     if ($tours->have_posts()) :
                         while ($tours->have_posts()) : $tours->the_post();
                             // Get tour meta
@@ -894,6 +918,7 @@ class BSV_Tours_Widget extends \Elementor\Widget_Base {
                             
                             <div class="<?php echo esc_attr($column_class); ?> bsv-tour-card-wrapper">
                                 <?php include(BSV_ELEMENTOR_WIDGETS_PATH . 'templates/tour-card.php'); ?>
+
                             </div>
                             
                         <?php endwhile;
@@ -916,6 +941,21 @@ class BSV_Tours_Widget extends \Elementor\Widget_Base {
                     </div>
                 <?php endif; ?>
             </div>
+            <!-- Pagination - Only show if enabled and needed-->
+            <?php if ($settings['enable_pagination'] === 'yes' && $tours->max_num_pages > 1) : ?>
+                <div class="bsv-tours-pagination">
+                    <?php
+                    echo paginate_links(array(
+                        'base' => str_replace(999999999, '%#%', esc_url(get_pagenum_link(999999999))),
+                        'format' => '?paged=%#%',
+                        'current' => $paged,
+                        'total' => $tours->max_num_pages,
+                        'prev_text' => '<i class="fas fa-chevron-left"></i>',
+                        'next_text' => '<i class="fas fa-chevron-right"></i>',
+                    ));
+                    ?>
+                </div>
+            <?php endif; ?>
         </div>
         <?php
     }
