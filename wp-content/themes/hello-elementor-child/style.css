@@ -30,8 +30,8 @@ Elementor Pro tested up to: 3.15.0
     --text-color: #333333;
     --light-color: #ffffff;
     --dark-color: #222222;
-    --heading-font: 'Montserrat', sans-serif;
-    --body-font: 'Open Sans', sans-serif;
+    --heading-font: 'Playfair Display', serif;
+    --body-font: 'Inter', sans-serif;
 }
 
 body {
