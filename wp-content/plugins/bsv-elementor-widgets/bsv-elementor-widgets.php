@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BSV Elementor Widgets
  * Description: Custom Elementor widgets for Beyond Splendid Ventures - displays tours, destinations, and reviews.
- * Version: 1.0.0
+ * Version: 2.0.0
  * Author: Beyond Splendid Ventures
  * Text Domain: bsv-elementor-widgets
  */
@@ -24,7 +24,7 @@ final class BSV_Elementor_Widgets {
     /**
      * Plugin Version
      */
-    const VERSION = '1.0.0';
+    const VERSION = '2.0.0';
 
     /**
      * Minimum Elementor Version

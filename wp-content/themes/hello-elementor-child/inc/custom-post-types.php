@@ -291,7 +291,7 @@ function bsv_tour_details_callback($post) {
     ?>
     <table class="form-table">
         <tr>
-            <th><label for="tour_price"><?php _e('Tour Price ($)', 'hello-elementor-child'); ?></label></th>
+            <th><label for="tour_price"><?php _e('Tour Price (KES)', 'hello-elementor-child'); ?></label></th>
             <td>
                 <input type="text" id="tour_price" name="tour_price" value="<?php echo esc_attr($tour_price); ?>" class="regular-text">
                 <p class="description"><?php _e('Enter the base price of the tour per person (numbers only, without currency symbol).', 'hello-elementor-child'); ?></p>
