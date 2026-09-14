@@ -1,4 +1,3 @@
-
 <?php
 // Get tour meta
 $tour_price = get_post_meta(get_the_ID(), 'tour_price', true);
@@ -13,6 +12,15 @@ $image_url = get_the_post_thumbnail_url(get_the_ID(), 'medium_large');
 if (!$image_url) {
     $image_url = BSV_ELEMENTOR_WIDGETS_URL . 'assets/images/placeholder.svg';
 }
+
+// $tour_price_data and $default_currency are set in the parent widget's render()
+// and are available here because this file is loaded via include().
+$initial_price_display = '';
+if (!empty($tour_price_data)) {
+    $initial_price_display = ($default_currency === 'usd')
+        ? $tour_price_data['usd_display']
+        : $tour_price_data['kes_display'];
+}
 ?>
 
 <div class="bsv-tour-card">
@@ -22,7 +30,11 @@ if (!$image_url) {
         </a>
         
         <?php if (!empty($tour_price)) : ?>
-            <div class="bsv-tour-price">$<?php echo esc_html($tour_price); ?></div>
+            <div
+                class="bsv-tour-price"
+                data-price-kes="<?php echo esc_attr($tour_price_data['kes_display']); ?>"
+                data-price-usd="<?php echo esc_attr($tour_price_data['usd_display']); ?>"
+            ><?php echo esc_html($initial_price_display); ?></div>
         <?php endif; ?>
         
         <?php if (!empty($tour_featured) && $tour_featured == '1') : ?>

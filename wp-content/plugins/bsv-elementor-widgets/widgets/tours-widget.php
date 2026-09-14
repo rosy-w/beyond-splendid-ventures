@@ -8,48 +8,60 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class BSV_Tours_Widget extends \Elementor\Widget_Base {
+class BSV_Tours_Widget extends \Elementor\Widget_Base
+{
+
+    /**
+     * Track whether the currency-toggle script has already been printed on this page.
+     */
+    private static $script_printed = false;
 
     /**
      * Get widget name
      */
-    public function get_name() {
+    public function get_name()
+    {
         return 'bsv_tours';
     }
 
     /**
      * Get widget title
      */
-    public function get_title() {
+    public function get_title()
+    {
         return esc_html__('BSV Tours', 'bsv-elementor-widgets');
     }
 
     /**
      * Get widget icon
      */
-    public function get_icon() {
+    public function get_icon()
+    {
         return 'eicon-map-pin';
     }
 
     /**
      * Get widget categories
      */
-    public function get_categories() {
+    public function get_categories()
+    {
         return ['beyond-splendid-ventures'];
     }
 
     /**
      * Get widget keywords
      */
-    public function get_keywords() {
+    public function get_keywords()
+    {
         return ['tours', 'travel', 'bsv', 'beyond splendid ventures'];
     }
 
     /**
      * Register widget controls
      */
-    protected function _register_controls() {
-        
+    protected function _register_controls()
+    {
+
         // Content Section
         $this->start_controls_section(
             'section_content',
@@ -103,6 +115,43 @@ class BSV_Tours_Widget extends \Elementor\Widget_Base {
                     '3' => esc_html__('3', 'bsv-elementor-widgets'),
                     '4' => esc_html__('4', 'bsv-elementor-widgets'),
                 ],
+            ]
+        );
+
+        $this->add_control(
+            'show_currency_toggle',
+            [
+                'label' => esc_html__('Show Currency Toggle (KES / USD)', 'bsv-elementor-widgets'),
+                'type' => \Elementor\Controls_Manager::SWITCHER,
+                'label_on' => esc_html__('Yes', 'bsv-elementor-widgets'),
+                'label_off' => esc_html__('No', 'bsv-elementor-widgets'),
+                'return_value' => 'yes',
+                'default' => 'yes',
+                'separator' => 'before',
+            ]
+        );
+
+        $this->add_control(
+            'default_currency',
+            [
+                'label' => esc_html__('Default Currency Shown', 'bsv-elementor-widgets'),
+                'type' => \Elementor\Controls_Manager::SELECT,
+                'options' => [
+                    'kes' => esc_html__('KES', 'bsv-elementor-widgets'),
+                    'usd' => esc_html__('USD', 'bsv-elementor-widgets'),
+                ],
+                'default' => 'kes',
+            ]
+        );
+
+        $this->add_control(
+            'usd_exchange_rate',
+            [
+                'label' => esc_html__('KES to USD Exchange Rate', 'bsv-elementor-widgets'),
+                'type' => \Elementor\Controls_Manager::NUMBER,
+                'description' => esc_html__('How many KES equal 1 USD. Enter tour prices in KES on each tour post; USD is calculated automatically using this rate.', 'bsv-elementor-widgets'),
+                'default' => 130,
+                'min' => 1,
             ]
         );
 
@@ -277,6 +326,56 @@ class BSV_Tours_Widget extends \Elementor\Widget_Base {
                 'selectors' => [
                     '{{WRAPPER}} .bsv-section-header' => 'margin-bottom: {{SIZE}}{{UNIT}};',
                 ],
+            ]
+        );
+
+        $this->end_controls_section();
+
+        // Style Section for Currency Toggle
+        $this->start_controls_section(
+            'section_currency_toggle_style',
+            [
+                'label' => esc_html__('Currency Toggle', 'bsv-elementor-widgets'),
+                'tab' => \Elementor\Controls_Manager::TAB_STYLE,
+                'condition' => [
+                    'show_currency_toggle' => 'yes',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'toggle_active_bg_color',
+            [
+                'label' => esc_html__('Active Background', 'bsv-elementor-widgets'),
+                'type' => \Elementor\Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .bsv-currency-btn.active' => 'background-color: {{VALUE}}; border-color: {{VALUE}};',
+                ],
+                'default' => '#12372a',
+            ]
+        );
+
+        $this->add_control(
+            'toggle_active_text_color',
+            [
+                'label' => esc_html__('Active Text Color', 'bsv-elementor-widgets'),
+                'type' => \Elementor\Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .bsv-currency-btn.active' => 'color: {{VALUE}};',
+                ],
+                'default' => '#ffffff',
+            ]
+        );
+
+        $this->add_control(
+            'toggle_inactive_text_color',
+            [
+                'label' => esc_html__('Inactive Text Color', 'bsv-elementor-widgets'),
+                'type' => \Elementor\Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .bsv-currency-btn:not(.active)' => 'color: {{VALUE}};',
+                ],
+                'default' => '#12372a',
             ]
         );
 
@@ -794,32 +893,103 @@ class BSV_Tours_Widget extends \Elementor\Widget_Base {
     /**
      * Get tour categories
      */
-    private function get_tour_categories() {
+    private function get_tour_categories()
+    {
         $categories = array();
-        
+
         // Get terms
         $terms = get_terms(array(
             'taxonomy' => 'tour_category',
             'hide_empty' => false,
         ));
-        
+
         if (!empty($terms) && !is_wp_error($terms)) {
             foreach ($terms as $term) {
                 $categories[$term->slug] = $term->name;
             }
         }
-        
+
         return $categories;
+    }
+
+    /**
+     * Given a KES price and an exchange rate, return both display-formatted
+     * strings for use as data attributes and initial rendered text.
+     */
+    private function get_tour_price_data($price, $rate)
+    {
+        $price = floatval($price);
+        $rate = $rate > 0 ? floatval($rate) : 1;
+
+        if ($price <= 0) {
+            return [
+                'kes_display' => '',
+                'usd_display' => '',
+            ];
+        }
+
+        $usd_value = $price / $rate;
+
+        return [
+            'kes_display' => 'KES ' . number_format($price, 0),
+            'usd_display' => '$' . number_format($usd_value, 2),
+        ];
+    }
+
+    /**
+     * Print the currency-toggle JS once per page load, regardless of how many
+     * instances of this widget appear on the page.
+     */
+    private function print_currency_toggle_script()
+    {
+        if (self::$script_printed) {
+            return;
+        }
+        self::$script_printed = true;
+        ?>
+        <script>
+        (function () {
+            document.addEventListener('click', function (e) {
+                var btn = e.target.closest('.bsv-currency-btn');
+                if (!btn) return;
+
+                var widget = btn.closest('.bsv-tours-widget');
+                if (!widget) return;
+
+                var currency = btn.getAttribute('data-currency');
+
+                widget.querySelectorAll('.bsv-currency-btn').forEach(function (b) {
+                    var isActive = (b === btn);
+                    b.classList.toggle('active', isActive);
+                    b.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+                });
+
+                widget.querySelectorAll('.bsv-tour-price').forEach(function (priceEl) {
+                    var value = priceEl.getAttribute('data-price-' + currency);
+                    if (value) {
+                        priceEl.textContent = value;
+                    }
+                });
+            });
+        })();
+        </script>
+        <?php
     }
 
     /**
      * Render widget output
      */
-    protected function render() {
+    protected function render()
+    {
         $settings = $this->get_settings_for_display();
         // Handle pagination
         $paged = max(1, get_query_var('paged') ?: (get_query_var('page') ?: 1));
-        
+
+        // Currency display settings
+        $default_currency = !empty($settings['default_currency']) ? $settings['default_currency'] : 'kes';
+        $usd_exchange_rate = !empty($settings['usd_exchange_rate']) ? $settings['usd_exchange_rate'] : 130;
+        $show_currency_toggle = $settings['show_currency_toggle'] === 'yes';
+
         // Query args
         $args = array(
             'post_type' => 'tour',
@@ -828,7 +998,7 @@ class BSV_Tours_Widget extends \Elementor\Widget_Base {
             'orderby' => 'date',
             'order' => 'DESC',
         );
-         // Set posts per page based on pagination setting
+        // Set posts per page based on pagination setting
         if ($settings['enable_pagination'] === 'yes') {
             $args['posts_per_page'] = $settings['number_of_tours'];
             $args['paged'] = $paged;
@@ -837,25 +1007,25 @@ class BSV_Tours_Widget extends \Elementor\Widget_Base {
             $args['posts_per_page'] = $settings['number_of_tours'];
             $args['no_found_rows'] = true; // Optimize query when not paginating
         }
-        
+
         // Add featured filter
         if ($settings['show_featured_only'] === 'yes') {
             $args['meta_query'] = array(
                 array(
-                    'key'     => 'tour_featured',
-                    'value'   => '1',
+                    'key' => 'tour_featured',
+                    'value' => '1',
                     'compare' => '=',
                 ),
             );
         }
-        
+
         // Add category filter
         if (!empty($settings['tour_categories'])) {
             $args['tax_query'] = array(
                 array(
                     'taxonomy' => 'tour_category',
-                    'field'    => 'slug',
-                    'terms'    => $settings['tour_categories'],
+                    'field' => 'slug',
+                    'terms' => $settings['tour_categories'],
                 ),
             );
         }
@@ -876,21 +1046,41 @@ class BSV_Tours_Widget extends \Elementor\Widget_Base {
                 $column_class = 'col-md-3';
                 break;
         }
-        
+
         // Get tours
         $tours = new WP_Query($args);
         ?>
         
         <div class="bsv-tours-widget">
-            <?php if (!empty($settings['title']) || !empty($settings['subtitle'])) : ?>
+            <?php if (!empty($settings['title']) || !empty($settings['subtitle']) || $show_currency_toggle): ?>
                 <div class="bsv-section-header">
-                    <?php if (!empty($settings['subtitle'])) : ?>
-                        <p class="bsv-tours-subtitle"><?php echo esc_html($settings['subtitle']); ?></p>
-                    <?php endif; ?>
-                    <?php if (!empty($settings['title'])) : ?>
-                        <h2 class="bsv-tours-title"><?php echo esc_html($settings['title']); ?></h2>
-                    <?php endif; ?>
-                    
+                    <div class="bsv-section-header-top">
+                        <div class="bsv-section-header-text">
+                            <?php if (!empty($settings['subtitle'])): ?>
+                                <p class="bsv-tours-subtitle"><?php echo esc_html($settings['subtitle']); ?></p>
+                            <?php endif; ?>
+                            <?php if (!empty($settings['title'])): ?>
+                                <h2 class="bsv-tours-title"><?php echo esc_html($settings['title']); ?></h2>
+                            <?php endif; ?>
+                        </div>
+
+                        <?php if ($show_currency_toggle): ?>
+                            <div class="bsv-currency-toggle" role="group" aria-label="<?php esc_attr_e('Currency', 'bsv-elementor-widgets'); ?>">
+                                <button
+                                    type="button"
+                                    class="bsv-currency-btn<?php echo $default_currency === 'kes' ? ' active' : ''; ?>"
+                                    data-currency="kes"
+                                    aria-pressed="<?php echo $default_currency === 'kes' ? 'true' : 'false'; ?>"
+                                >KES</button>
+                                <button
+                                    type="button"
+                                    class="bsv-currency-btn<?php echo $default_currency === 'usd' ? ' active' : ''; ?>"
+                                    data-currency="usd"
+                                    aria-pressed="<?php echo $default_currency === 'usd' ? 'true' : 'false'; ?>"
+                                >USD</button>
+                            </div>
+                        <?php endif; ?>
+                    </div>
                 </div>
             <?php endif; ?>
             
@@ -899,16 +1089,18 @@ class BSV_Tours_Widget extends \Elementor\Widget_Base {
                     <?php
                     $column_class = 'col-xl-4 col-lg-4 col-md-6 col-sm-12'; // More specific column classes
                     $counter = 0;
-                    if ($tours->have_posts()) :
-                        while ($tours->have_posts()) : $tours->the_post();
+                    if ($tours->have_posts()):
+                        while ($tours->have_posts()):
+                            $tours->the_post();
                             // Get tour meta
                             $tour_price = get_post_meta(get_the_ID(), 'tour_price', true);
+                            $tour_price_data = $this->get_tour_price_data($tour_price, $usd_exchange_rate);
                             $tour_duration = get_post_meta(get_the_ID(), 'tour_duration', true);
                             $tour_group_size = get_post_meta(get_the_ID(), 'tour_group_size', true);
                             $tour_difficulty = get_post_meta(get_the_ID(), 'tour_difficulty', true);
                             $tour_featured = get_post_meta(get_the_ID(), 'tour_featured', true);
                             $tour_excerpt = wp_trim_words(get_the_excerpt(), 20);
-                            
+
                             // Feature image
                             $image_url = get_the_post_thumbnail_url(get_the_ID(), 'medium_large');
                             if (!$image_url) {
@@ -923,14 +1115,14 @@ class BSV_Tours_Widget extends \Elementor\Widget_Base {
                             
                         <?php endwhile;
                         wp_reset_postdata();
-                    else : ?>
+                    else: ?>
                         <div class="col-12">
                             <p><?php echo esc_html__('No tours found.', 'bsv-elementor-widgets'); ?></p>
                         </div>
                     <?php endif; ?>
                 </div>
                 
-                <?php if ($settings['show_view_all'] === 'yes' && !empty($settings['view_all_url']['url'])) : ?>
+                <?php if ($settings['show_view_all'] === 'yes' && !empty($settings['view_all_url']['url'])): ?>
                     <div class="bsv-view-all-button-wrapper text-center">
                         <a href="<?php echo esc_url($settings['view_all_url']['url']); ?>" 
                            class="bsv-view-all-button"
@@ -942,7 +1134,7 @@ class BSV_Tours_Widget extends \Elementor\Widget_Base {
                 <?php endif; ?>
             </div>
             <!-- Pagination - Only show if enabled and needed-->
-            <?php if ($settings['enable_pagination'] === 'yes' && $tours->max_num_pages > 1) : ?>
+            <?php if ($settings['enable_pagination'] === 'yes' && $tours->max_num_pages > 1): ?>
                 <div class="bsv-tours-pagination">
                     <?php
                     echo paginate_links(array(
@@ -958,5 +1150,8 @@ class BSV_Tours_Widget extends \Elementor\Widget_Base {
             <?php endif; ?>
         </div>
         <?php
+        if ($show_currency_toggle) {
+            $this->print_currency_toggle_script();
+        }
     }
 }
