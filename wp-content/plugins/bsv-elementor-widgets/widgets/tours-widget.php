@@ -343,11 +343,72 @@ class BSV_Tours_Widget extends \Elementor\Widget_Base
             ]
         );
 
+        // --- Typography ---
+        $this->add_group_control(
+            \Elementor\Group_Control_Typography::get_type(),
+            [
+                'name'     => 'toggle_typography',
+                'label'    => esc_html__('Typography', 'bsv-elementor-widgets'),
+                'selector' => '{{WRAPPER}} .bsv-currency-btn',
+            ]
+        );
+
+        // --- Normal / Active tabs ---
+        $this->start_controls_tabs('toggle_btn_tabs');
+
+        $this->start_controls_tab(
+            'toggle_btn_tab_normal',
+            ['label' => esc_html__('Normal', 'bsv-elementor-widgets')]
+        );
+
+        $this->add_control(
+            'toggle_inactive_bg_color',
+            [
+                'label'     => esc_html__('Background', 'bsv-elementor-widgets'),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .bsv-currency-btn:not(.active)' => 'background-color: {{VALUE}};',
+                ],
+                'default' => 'transparent',
+            ]
+        );
+
+        $this->add_control(
+            'toggle_inactive_text_color',
+            [
+                'label'     => esc_html__('Text Color', 'bsv-elementor-widgets'),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .bsv-currency-btn:not(.active)' => 'color: {{VALUE}};',
+                ],
+                'default' => '#12372a',
+            ]
+        );
+
+        $this->add_control(
+            'toggle_inactive_border_color',
+            [
+                'label'     => esc_html__('Border Color', 'bsv-elementor-widgets'),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .bsv-currency-btn:not(.active)' => 'border-color: {{VALUE}};',
+                ],
+                'default' => '#12372a',
+            ]
+        );
+
+        $this->end_controls_tab();
+
+        $this->start_controls_tab(
+            'toggle_btn_tab_active',
+            ['label' => esc_html__('Active', 'bsv-elementor-widgets')]
+        );
+
         $this->add_control(
             'toggle_active_bg_color',
             [
-                'label' => esc_html__('Active Background', 'bsv-elementor-widgets'),
-                'type' => \Elementor\Controls_Manager::COLOR,
+                'label'     => esc_html__('Background', 'bsv-elementor-widgets'),
+                'type'      => \Elementor\Controls_Manager::COLOR,
                 'selectors' => [
                     '{{WRAPPER}} .bsv-currency-btn.active' => 'background-color: {{VALUE}}; border-color: {{VALUE}};',
                 ],
@@ -358,8 +419,8 @@ class BSV_Tours_Widget extends \Elementor\Widget_Base
         $this->add_control(
             'toggle_active_text_color',
             [
-                'label' => esc_html__('Active Text Color', 'bsv-elementor-widgets'),
-                'type' => \Elementor\Controls_Manager::COLOR,
+                'label'     => esc_html__('Text Color', 'bsv-elementor-widgets'),
+                'type'      => \Elementor\Controls_Manager::COLOR,
                 'selectors' => [
                     '{{WRAPPER}} .bsv-currency-btn.active' => 'color: {{VALUE}};',
                 ],
@@ -367,15 +428,84 @@ class BSV_Tours_Widget extends \Elementor\Widget_Base
             ]
         );
 
-        $this->add_control(
-            'toggle_inactive_text_color',
+        $this->end_controls_tab();
+        $this->end_controls_tabs();
+
+        // --- Padding ---
+        $this->add_responsive_control(
+            'toggle_btn_padding',
             [
-                'label' => esc_html__('Inactive Text Color', 'bsv-elementor-widgets'),
-                'type' => \Elementor\Controls_Manager::COLOR,
-                'selectors' => [
-                    '{{WRAPPER}} .bsv-currency-btn:not(.active)' => 'color: {{VALUE}};',
+                'label'      => esc_html__('Padding', 'bsv-elementor-widgets'),
+                'type'       => \Elementor\Controls_Manager::DIMENSIONS,
+                'size_units' => ['px', 'em', 'rem'],
+                'selectors'  => [
+                    '{{WRAPPER}} .bsv-currency-btn' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 ],
-                'default' => '#12372a',
+                'default' => [
+                    'top'    => 6,
+                    'right'  => 16,
+                    'bottom' => 6,
+                    'left'   => 16,
+                    'unit'   => 'px',
+                ],
+                'separator' => 'before',
+            ]
+        );
+
+        // --- Border ---
+        $this->add_group_control(
+            \Elementor\Group_Control_Border::get_type(),
+            [
+                'name'     => 'toggle_btn_border',
+                'label'    => esc_html__('Border', 'bsv-elementor-widgets'),
+                'selector' => '{{WRAPPER}} .bsv-currency-btn',
+                'fields_options' => [
+                    'border' => ['default' => 'solid'],
+                    'width'  => [
+                        'default' => [
+                            'top' => 1, 'right' => 1, 'bottom' => 1, 'left' => 1, 'unit' => 'px',
+                        ],
+                    ],
+                    'color'  => ['default' => '#12372a'],
+                ],
+            ]
+        );
+
+        // --- Border Radius ---
+        $this->add_responsive_control(
+            'toggle_btn_border_radius',
+            [
+                'label'      => esc_html__('Border Radius', 'bsv-elementor-widgets'),
+                'type'       => \Elementor\Controls_Manager::DIMENSIONS,
+                'size_units' => ['px', '%', 'em'],
+                'selectors'  => [
+                    '{{WRAPPER}} .bsv-currency-btn' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+                'default' => [
+                    'top'    => 4,
+                    'right'  => 4,
+                    'bottom' => 4,
+                    'left'   => 4,
+                    'unit'   => 'px',
+                ],
+            ]
+        );
+
+        // --- Gap between buttons ---
+        $this->add_responsive_control(
+            'toggle_btn_gap',
+            [
+                'label'      => esc_html__('Gap Between Buttons', 'bsv-elementor-widgets'),
+                'type'       => \Elementor\Controls_Manager::SLIDER,
+                'size_units' => ['px'],
+                'range'      => [
+                    'px' => ['min' => 0, 'max' => 40, 'step' => 1],
+                ],
+                'default' => ['size' => 4, 'unit' => 'px'],
+                'selectors' => [
+                    '{{WRAPPER}} .bsv-currency-toggle' => 'gap: {{SIZE}}{{UNIT}};',
+                ],
+                'separator' => 'before',
             ]
         );
 

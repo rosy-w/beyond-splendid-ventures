@@ -23,6 +23,7 @@ if (!$image_url) {
 
 // $tour_price_data and $default_currency are set in the parent widget's render()
 // and are available here because this file is loaded via include().
+$default_currency = $default_currency ?? 'usd';
 $initial_price_display = '';
 if (!empty($tour_price_data)) {
     $initial_price_display = ($default_currency === 'usd')
@@ -37,7 +38,7 @@ if (!empty($tour_price_data)) {
             <img src="<?php echo esc_url($image_url); ?>" alt="<?php the_title_attribute(); ?>">
         </a>
         
-        <?php if (!empty($tour_price)) : ?>
+        <?php if (!empty($tour_price_data)) : ?>
             <div
                 class="bsv-tour-price"
                 data-price-kes="<?php echo esc_attr($tour_price_data['kes_display']); ?>"
