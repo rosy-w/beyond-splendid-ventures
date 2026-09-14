@@ -53,7 +53,10 @@ if (!empty($tour_price_data)) {
     <div class="bsv-tour-details">
         <?php if (!empty($tour_destination_country)) : ?>
             <p class="bsv-tour-destination-country">
-                <i class="fas fa-map-marker-alt"></i> <?php echo esc_html($tour_destination_country); ?>
+                <?php if (!isset($settings['destination_show_icon']) || $settings['destination_show_icon'] === 'yes') : ?>
+                    <i class="fas fa-map-marker-alt bsv-dest-icon" aria-hidden="true"></i>
+                <?php endif; ?>
+                <?php echo esc_html($tour_destination_country); ?>
             </p>
         <?php endif; ?>
 

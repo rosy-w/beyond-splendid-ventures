@@ -523,6 +523,99 @@ class BSV_Tours_Widget extends \Elementor\Widget_Base
             ]
         );
 
+        // ── Destination Country ──────────────────────────────────────────────
+        $this->add_control(
+            'destination_heading',
+            [
+                'label'     => esc_html__('Destination Country', 'bsv-elementor-widgets'),
+                'type'      => \Elementor\Controls_Manager::HEADING,
+                'separator' => 'before',
+            ]
+        );
+
+        $this->add_control(
+            'destination_color',
+            [
+                'label'     => esc_html__('Text Color', 'bsv-elementor-widgets'),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'default'   => '#888888',
+                'selectors' => [
+                    '{{WRAPPER}} .bsv-tour-destination-country' => 'color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_group_control(
+            \Elementor\Group_Control_Typography::get_type(),
+            [
+                'name'     => 'destination_typography',
+                'selector' => '{{WRAPPER}} .bsv-tour-destination-country',
+            ]
+        );
+
+        $this->add_responsive_control(
+            'destination_padding',
+            [
+                'label'      => esc_html__('Padding', 'bsv-elementor-widgets'),
+                'type'       => \Elementor\Controls_Manager::DIMENSIONS,
+                'size_units' => ['px', 'em', '%'],
+                'selectors'  => [
+                    '{{WRAPPER}} .bsv-tour-destination-country' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+                'default' => [
+                    'top'      => 0,
+                    'right'    => 0,
+                    'bottom'   => 4,
+                    'left'     => 0,
+                    'unit'     => 'px',
+                    'isLinked' => false,
+                ],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'destination_spacing',
+            [
+                'label'      => esc_html__('Bottom Spacing', 'bsv-elementor-widgets'),
+                'type'       => \Elementor\Controls_Manager::SLIDER,
+                'size_units' => ['px', 'em'],
+                'range'      => [
+                    'px' => ['min' => 0, 'max' => 60, 'step' => 1],
+                    'em' => ['min' => 0, 'max' => 5,  'step' => 0.1],
+                ],
+                'default'   => ['unit' => 'px', 'size' => 6],
+                'selectors' => [
+                    '{{WRAPPER}} .bsv-tour-destination-country' => 'margin-bottom: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'destination_show_icon',
+            [
+                'label'        => esc_html__('Show Map-Pin Icon', 'bsv-elementor-widgets'),
+                'type'         => \Elementor\Controls_Manager::SWITCHER,
+                'label_on'     => esc_html__('Yes', 'bsv-elementor-widgets'),
+                'label_off'    => esc_html__('No', 'bsv-elementor-widgets'),
+                'return_value' => 'yes',
+                'default'      => 'yes',
+            ]
+        );
+
+        $this->add_control(
+            'destination_icon_color',
+            [
+                'label'     => esc_html__('Icon Color', 'bsv-elementor-widgets'),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'default'   => '#888888',
+                'selectors' => [
+                    '{{WRAPPER}} .bsv-tour-destination-country .bsv-dest-icon' => 'color: {{VALUE}};',
+                ],
+                'condition' => ['destination_show_icon' => 'yes'],
+            ]
+        );
+
+        // ── Price Badge ───────────────────────────────────────────────────────
         $this->add_control(
             'price_badge_bg_color',
             [
