@@ -1,7 +1,7 @@
 <?php
 // Get tour meta
 $tour_price = get_post_meta(get_the_ID(), 'tour_price', true);
-$destination_country = get_post_meta(get_the_ID(), 'destination_country', true);
+$tour_destination_country = get_post_meta(get_the_ID(), 'destination_country', true);
 $tour_duration = get_post_meta(get_the_ID(), 'tour_duration', true);
 $tour_group_size = get_post_meta(get_the_ID(), 'tour_group_size', true);
 $tour_difficulty = get_post_meta(get_the_ID(), 'tour_difficulty', true);
