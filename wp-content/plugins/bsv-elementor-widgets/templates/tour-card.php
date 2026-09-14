@@ -1,6 +1,7 @@
 <?php
 // Get tour meta
 $tour_price = get_post_meta(get_the_ID(), 'tour_price', true);
+$destination_country = get_post_meta(get_the_ID(), 'destination_country', true);
 $tour_duration = get_post_meta(get_the_ID(), 'tour_duration', true);
 $tour_group_size = get_post_meta(get_the_ID(), 'tour_group_size', true);
 $tour_difficulty = get_post_meta(get_the_ID(), 'tour_difficulty', true);
@@ -45,6 +46,9 @@ if (!empty($tour_price_data)) {
     <div class="bsv-tour-details">
         <h3 class="bsv-tour-title">
             <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+        </h3>
+        <h3 class="bsv-tour-destination_country">
+            <?php echo esc_html($tour_destination_country); ?>
         </h3>
         
         <div class="bsv-tour-meta">
