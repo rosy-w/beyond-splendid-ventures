@@ -1146,3 +1146,239 @@ function bsv_filter_request_query($query_vars) {
     return $query_vars;
 }
 add_filter('request', 'bsv_filter_request_query');
+
+
+/**
+ * Register the "Import Tour" submenu page under Tours.
+ */
+function bsv_register_tour_import_page()
+{
+    add_submenu_page(
+        'edit.php?post_type=tour',
+        __('Import Tour from Template', 'hello-elementor-child'),
+        __('Import Tour', 'hello-elementor-child'),
+        'edit_posts',
+        'bsv-import-tour',
+        'bsv_render_tour_import_page'
+    );
+}
+add_action('admin_menu', 'bsv_register_tour_import_page');
+
+/**
+ * Parse a pasted tour template into the meta fields used by the Tour post type.
+ */
+function bsv_parse_tour_template($raw)
+{
+    $raw = str_replace("\r\n", "\n", $raw);
+    $lines = explode("\n", $raw);
+
+    $data = array(
+        'title' => '',
+        'tour_price' => '',
+        'tour_duration' => '',
+        'tour_group_size' => '',
+        'tour_difficulty' => '',
+        'tour_highlights' => '',
+        'tour_itinerary' => '',
+        'tour_includes' => '',
+        'tour_excludes' => '',
+    );
+
+    // Title: first non-empty line, with an optional "Tour:" prefix stripped.
+    foreach ($lines as $line) {
+        $trimmed = trim($line);
+        if ($trimmed !== '') {
+            $data['title'] = preg_replace('/^Tour:\s*/i', '', $trimmed);
+            break;
+        }
+    }
+
+    // Detail bullets (Price / Number of Days / Number of People / Difficulty).
+    foreach ($lines as $line) {
+        $trimmed = trim($line);
+
+        if (preg_match('/^\*\s*Price:\s*(.+)$/i', $trimmed, $m)) {
+            preg_match_all('/[\d,]+(?:\.\d+)?/', $m[1], $nums);
+            if (!empty($nums[0])) {
+                // Take the lower bound of a range as the stored price.
+                $data['tour_price'] = str_replace(',', '', $nums[0][0]);
+            }
+        }
+
+        if (preg_match('/^\*\s*Number of Days:\s*(\d+)/i', $trimmed, $m)) {
+            $data['tour_duration'] = $m[1];
+        }
+
+        if (preg_match('/^\*\s*Number of People:\s*(.+)$/i', $trimmed, $m)) {
+            preg_match_all('/\d+/', $m[1], $nums);
+            if (!empty($nums[0])) {
+                // Take the highest number mentioned as the max group size.
+                $data['tour_group_size'] = max(array_map('intval', $nums[0]));
+            }
+        }
+
+        if (preg_match('/^\*\s*Difficulty:\s*(.+)$/i', $trimmed, $m)) {
+            $data['tour_difficulty'] = trim($m[1]);
+        }
+    }
+
+    // Section extraction: Tour Highlights / Day-by-Day Itinerary / What's Included / What's Not Included
+    $headings = array(
+        'highlights' => 'Tour Highlights',
+        'itinerary' => 'Day-by-Day Itinerary',
+        'includes' => "What's Included",
+        'excludes' => "What's Not Included",
+    );
+
+    $positions = array();
+    foreach ($headings as $key => $heading) {
+        $pos = stripos($raw, $heading);
+        if ($pos !== false) {
+            $positions[$key] = array('pos' => $pos, 'len' => strlen($heading));
+        }
+    }
+
+    uasort($positions, function ($a, $b) {
+        return $a['pos'] <=> $b['pos'];
+    });
+    $keys = array_keys($positions);
+
+    foreach ($keys as $i => $key) {
+        $start = $positions[$key]['pos'] + $positions[$key]['len'];
+        $end = isset($keys[$i + 1]) ? $positions[$keys[$i + 1]]['pos'] : strlen($raw);
+        $section_text = trim(substr($raw, $start, $end - $start));
+
+        switch ($key) {
+            case 'highlights':
+                $data['tour_highlights'] = bsv_normalize_bullets($section_text);
+                break;
+            case 'itinerary':
+                $data['tour_itinerary'] = bsv_normalize_itinerary($section_text);
+                break;
+            case 'includes':
+                $data['tour_includes'] = bsv_normalize_bullets($section_text);
+                break;
+            case 'excludes':
+                $data['tour_excludes'] = bsv_normalize_bullets($section_text);
+                break;
+        }
+    }
+
+    return $data;
+}
+
+/**
+ * Convert "* item" bullet lines into the "- item" format the meta boxes expect.
+ */
+function bsv_normalize_bullets($text)
+{
+    $lines = explode("\n", $text);
+    $out = array();
+    foreach ($lines as $line) {
+        $trimmed = trim($line);
+        if ($trimmed === '') {
+            continue;
+        }
+        $trimmed = preg_replace('/^[\*\-]\s*/', '', $trimmed);
+        $out[] = '- ' . $trimmed;
+    }
+    return implode("\n", $out);
+}
+
+/**
+ * Convert a pasted day-by-day itinerary ("Day X: Title" + "* Morning: ..." bullets)
+ * into the "Day X: Title" / "- Morning: ..." format the tour_itinerary field expects.
+ */
+function bsv_normalize_itinerary($text)
+{
+    $lines = explode("\n", $text);
+    $out = array();
+    foreach ($lines as $line) {
+        $trimmed = trim($line);
+        if ($trimmed === '') {
+            continue;
+        }
+        if (preg_match('/^Day\s+\d+\s*:/i', $trimmed)) {
+            if (!empty($out)) {
+                $out[] = '';
+            }
+            $out[] = $trimmed;
+        } else {
+            $trimmed = preg_replace('/^[\*\-]\s*/', '', $trimmed);
+            $out[] = '- ' . $trimmed;
+        }
+    }
+    return implode("\n", $out);
+}
+
+/**
+ * Render the Import Tour admin page and handle the paste-and-create form.
+ */
+function bsv_render_tour_import_page()
+{
+    if (!current_user_can('edit_posts')) {
+        wp_die(__('You do not have permission to access this page.', 'hello-elementor-child'));
+    }
+
+    $created_post_id = 0;
+    $pasted_text = '';
+
+    if (isset($_POST['bsv_import_tour_nonce']) && wp_verify_nonce($_POST['bsv_import_tour_nonce'], 'bsv_import_tour')) {
+        $pasted_text = isset($_POST['bsv_tour_template']) ? wp_unslash($_POST['bsv_tour_template']) : '';
+
+        if (trim($pasted_text) !== '') {
+            $data = bsv_parse_tour_template($pasted_text);
+
+            $post_id = wp_insert_post(array(
+                'post_type' => 'tour',
+                'post_title' => $data['title'] !== '' ? $data['title'] : __('Untitled Tour', 'hello-elementor-child'),
+                'post_status' => 'draft',
+                'post_content' => '',
+            ), true);
+
+            if (!is_wp_error($post_id)) {
+                update_post_meta($post_id, 'tour_price', sanitize_text_field($data['tour_price']));
+                update_post_meta($post_id, 'tour_duration', sanitize_text_field($data['tour_duration']));
+                update_post_meta($post_id, 'tour_group_size', sanitize_text_field($data['tour_group_size']));
+                update_post_meta($post_id, 'tour_difficulty', sanitize_text_field($data['tour_difficulty']));
+                update_post_meta($post_id, 'tour_highlights', wp_kses_post($data['tour_highlights']));
+                update_post_meta($post_id, 'tour_itinerary', wp_kses_post($data['tour_itinerary']));
+                update_post_meta($post_id, 'tour_includes', wp_kses_post($data['tour_includes']));
+                update_post_meta($post_id, 'tour_excludes', wp_kses_post($data['tour_excludes']));
+
+                $created_post_id = $post_id;
+                $pasted_text = ''; // clear the box after a successful import
+            }
+        }
+    }
+    ?>
+    <div class="wrap">
+        <h1><?php _e('Import Tour from Template', 'hello-elementor-child'); ?></h1>
+        <p><?php _e('Paste a tour description in the standard template format below (Price, Number of Days, Number of People, Difficulty, Tour Highlights, Day-by-Day Itinerary, What\'s Included, What\'s Not Included). A new Tour will be created as a Draft so you can review it before publishing.', 'hello-elementor-child'); ?></p>
+ 
+        <?php if ($created_post_id): ?>
+            <div class="notice notice-success">
+                <p>
+                    <?php
+                    printf(
+                        wp_kses(
+                            __('Draft tour created. <a href="%s">Review and edit it here</a>, then publish when ready. Double-check the price (only the lower end of a range is imported) and group size (only the highest number is imported).', 'hello-elementor-child'),
+                            array('a' => array('href' => array()))
+                        ),
+                        esc_url(get_edit_post_link($created_post_id))
+                    );
+                    ?>
+                </p>
+            </div>
+        <?php endif; ?>
+ 
+        <form method="post">
+            <?php wp_nonce_field('bsv_import_tour', 'bsv_import_tour_nonce'); ?>
+            <textarea name="bsv_tour_template" rows="25" style="width: 100%; font-family: monospace;" placeholder="<?php esc_attr_e('Paste your tour template text here...', 'hello-elementor-child'); ?>"><?php echo esc_textarea($pasted_text); ?></textarea>
+            <p>
+                <button type="submit" class="button button-primary"><?php _e('Create Draft Tour', 'hello-elementor-child'); ?></button>
+            </p>
+        </form>
+    </div>
+    <?php
+}
