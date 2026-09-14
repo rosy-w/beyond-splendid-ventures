@@ -1382,3 +1382,20 @@ function bsv_render_tour_import_page()
     </div>
     <?php
 }
+function bsv_allow_svg_uploads($mimes) {
+    $mimes['svg'] = 'image/svg+xml';
+    return $mimes;
+}
+add_filter('upload_mimes', 'bsv_allow_svg_uploads');
+
+function bsv_fix_svg_thumbnail($response, $attachment) {
+    if ($response['mime'] === 'image/svg+xml') {
+        $response['sizes'] = array(
+            'full' => array(
+                'url' => $response['url'],
+            ),
+        );
+    }
+    return $response;
+}
+add_filter('wp_prepare_attachment_for_js', 'bsv_fix_svg_thumbnail', 10, 2);
