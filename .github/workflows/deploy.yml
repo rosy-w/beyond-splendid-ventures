@@ -9,7 +9,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: SSH and pull latest changes
+      - name: SSH and deploy latest changes
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.CP_HOST }}
@@ -17,4 +17,5 @@ jobs:
           key: ${{ secrets.CP_SSH_KEY }}
           script: |
             cd ${{ secrets.CP_PATH }}
-            git pull origin main
+            git fetch origin main
+            git reset --hard origin/main
