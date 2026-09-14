@@ -1,7 +1,14 @@
 <?php
 // Get tour meta
 $tour_price = get_post_meta(get_the_ID(), 'tour_price', true);
-$tour_destination_country = get_post_meta(get_the_ID(), 'destination_country', true);
+
+// Destination country: read from taxonomy first, fall back to post meta
+$_country_terms = get_the_terms(get_the_ID(), 'destination_country');
+if (!empty($_country_terms) && !is_wp_error($_country_terms)) {
+    $tour_destination_country = implode(', ', wp_list_pluck($_country_terms, 'name'));
+} else {
+    $tour_destination_country = get_post_meta(get_the_ID(), 'destination_country', true);
+}
 $tour_duration = get_post_meta(get_the_ID(), 'tour_duration', true);
 $tour_group_size = get_post_meta(get_the_ID(), 'tour_group_size', true);
 $tour_difficulty = get_post_meta(get_the_ID(), 'tour_difficulty', true);
@@ -44,11 +51,14 @@ if (!empty($tour_price_data)) {
     </div>
     
     <div class="bsv-tour-details">
+        <?php if (!empty($tour_destination_country)) : ?>
+            <p class="bsv-tour-destination-country">
+                <i class="fas fa-map-marker-alt"></i> <?php echo esc_html($tour_destination_country); ?>
+            </p>
+        <?php endif; ?>
+
         <h3 class="bsv-tour-title">
             <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-        </h3>
-        <h3 class="bsv-tour-destination_country">
-            <?php echo esc_html($tour_destination_country); ?>
         </h3>
         
         <div class="bsv-tour-meta">
