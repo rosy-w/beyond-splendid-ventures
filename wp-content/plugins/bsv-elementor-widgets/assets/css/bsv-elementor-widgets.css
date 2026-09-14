@@ -183,13 +183,12 @@
 }
 
 .bsv-tour-title a {
-    color: #222222;
     text-decoration: none;
     transition: color 0.3s ease;
 }
 
 .bsv-tour-title a:hover {
-    color: #1a73e8;
+    color: #D4AC34;
 }
 
 .bsv-tour-meta {
@@ -202,7 +201,6 @@
     margin-right: 15px;
     margin-bottom: 5px;
     font-size: 13px;
-    color: #666666;
 }
 
 .bsv-tour-meta-item i {
@@ -211,15 +209,14 @@
 
 .bsv-tour-description {
     font-size: 14px;
-    color: #666666;
     margin-bottom: 15px;
     flex-grow: 1;
+    font-weight: 400;
 }
 
 .bsv-tour-button {
     align-self: flex-start;
     display: inline-block;
-    background-color: #1a73e8;
     color: #ffffff;
     padding: 8px 20px;
     border-radius: 4px;
